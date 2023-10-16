@@ -150,9 +150,9 @@
                                             <label class="col-md-1 control-label" style="text-align:left;">Work Date</label>
                                             <div class="col-md-4">
                                                 <div class="input-group date-picker input-daterange" data-date-format="yyyy-mm-dd" data-date-end-date="0d">
-                                                    <input class="form-control" name="from" placeholder="From" type="text" id="startdate" value="{{date('Y-m-d')}}" autocomplete="off">
+                                                    <input class="form-control" name="from" placeholder="From" type="text" id="startdate" value="{{$sdate}}" autocomplete="off">
                                                     <span class="input-group-addon"> to </span>
-                                                    <input class="form-control" name="to" placeholder="To" type="text" id="enddate" value="{{date('Y-m-d')}}" autocomplete="off"> 
+                                                    <input class="form-control" name="to" placeholder="To" type="text" id="enddate" value="{{$edate}}" autocomplete="off"> 
                                                 </div>
                                             </div>
                                             <label class="col-md-1 control-label" style="text-align:left;">Group</label>
@@ -161,19 +161,15 @@
                                                     <select class="form-control" id="group" name="group" aria-controls="" class="">
                                                         <option value="ALL">ALL</option>
                                                         @foreach ($group as $grp)
+                                                        @if($grp->orgCode == $grpcode)
+                                                        <option value="{{$grp->orgCode}}" selected>{{$grp->orgCode .'-'.$grp->orgName}}</option>
+                                                        @else
                                                         <option value="{{$grp->orgCode}}">{{$grp->orgCode .'-'.$grp->orgName}}</option>
+                                                        @endif
                                                         @endforeach
                                                     </select>                                                    
                                                 </div>
-                                            </div> 
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-1 control-label" style="text-align:left;">Search</label>
-                                            <div class="col-md-4">
-                                                <div class="input-group">
-                                                    <input class="form-control" name="searching" type="text" autocomplete="off"> 
-                                                </div>
-                                            </div>                                        
+                                            </div>                                            
                                             <div class="col-md-2">
                                                 <button type="button" class="btn btn-circle btn-block btn-outline btn-md blue doSearch"> <i class="fa fa-search"></i> Filter
                                                 </button>
@@ -199,39 +195,72 @@
                                 </div>
                                 <div class="portlet-body">
                                     <div class="table">
-                                        <table class="table table-bordered table-hover" style="font-size:8px;" id="att_table">
+                                        <table  class="table table-bordered" id="print_table">
                                             <thead>
                                                 <tr role="row">                                                           
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" width="30px" aria-label=" "> No. </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" width="60px" aria-label=" ID"> Group </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Code </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" width="30px" aria-label=" name"> Emp. Name </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" width="30px" aria-label=" work_date"> Work Date </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 45px;" aria-label="First IN">First IN</th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 34px;" aria-label="Last OUT">Last OUT</th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Duration">Total Duration</th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Rest">Total Rest</th>
+                                                    <th rowspan="2" colspan="1" style="width: 38px; text-align: left;" aria-label=" "> No. </th>
+                                                    <th rowspan="2" colspan="1" width="48px"  style="width: 68px; text-align: left;" aria-label=" ID"> Group </th>
+                                                    <th rowspan="2" colspan="1" width="48px"  style="width: 48px; text-align: left;" aria-label=" ID"> Employee Code </th>
+                                                    <th rowspan="2" colspan="1" width="68px" style="width: 48px; text-align: left;" aria-label=" name"> Employee Name </th>
+                                                    <th rowspan="2" colspan="1" style="width: 68px; text-align: center;" aria-label=" work_date"> Work Date </th>
+                                                    <th rowspan="1" colspan="2" style="width: 218px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th rowspan="1" colspan="2" style="width: 218px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th rowspan="1" colspan="2" style="width: 218px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th rowspan="1" colspan="2" style="width: 218px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th rowspan="1" colspan="2" style="width: 218px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th rowspan="2" colspan="1" style="width: 45px;" aria-label="First IN">First IN</th>
+                                                    <th rowspan="2" colspan="1" style="width: 34px;" aria-label="Last OUT">Last OUT</th>
+                                                    <th rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Duration">Total Duration</th>
+                                                    <th rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Rest">Total Rest</th>
                                                     <th class="all sorting not-export-col" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="OT Hours">OT Hours</th>
+                                                    <!--<th class="all sorting_disabled" rowspan="1" colspan="1" style="width: 52px;" aria-label=" Action "> Action </th>-->
                                                 </tr>
                                                 <tr role="row">                                                           
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="IN"> IN </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="OUT"> OUT </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="IN"> IN </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="OUT"> OUT </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="IN"> IN </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="OUT"> OUT </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="IN"> IN </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="OUT"> OUT </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="IN"> IN </th>
+                                                    <th rowspan="1" colspan="1" style="width: 45px;" aria-label="OUT"> OUT </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @php
+                                                $i = 0;
+                                                @endphp
+                                                @foreach($datatrx as $row)
+                                                <tr>
+
+                                                    <td style="text-align:left; padding-left: 5px; width:50px;"><?php echo $i + 1; ?></td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->orgname}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->worker_id}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->nama_personnel}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->work_date}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_in_0}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_ot_0}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_in_1}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_ot_1}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_in_2}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_ot_2}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_in_3}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_ot_3}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_in_4}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->time_ot_4}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->first_in}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->last_out}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->duration}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->total_rest}}</td>
+                                                    <td style="text-align:left;padding-left:5px; width:56px;">{{$row->ot}}</td>
+
+                                                </tr>                                       
+                                                @php
+                                                $i++;
+                                                @endphp
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
@@ -347,114 +376,29 @@ function printDiv(divID) {
 
         </script>
         <script language="javascript" type="text/javascript">
-            var tableAttendance;
-            var searching;
             $(document).ready(function () {
-                tableAttendance = $('#att_table').DataTable({
-//                    processing: true,
-                    autoFilter: false,
+                $('#print_table').DataTable({
                     language: {
                         loadingRecords: '&nbsp;',
                         lengthMenu: "_MENU_ records",
                         processing: 'Please wait...'
-//            processing: '<div class="spinner"></div>'
                     },
-                    serverSide: true,
-                    autoWidth: true,
+                    processing: true,
+                   serverSide: false,
+                    autoWidth: false,
 //        scrollY:        "300px",
-                            scrollX: true,
-                            scrollCollapse: true,
+//                            scrollX: true,
+                            scrollCollapse: false,
 //        fixedColumns: true,
 //                    fixedColumns: {
 //                        leftColumns: 1
 //                    },
-                    ajax: {
-                        url: "{{ url('report/data_beautifullify') }}",
-                        data: function (d) {
-                            d.startdate = $('#startdate').val(),
-                                    d.enddate = $('#enddate').val(),
-                                    d.group = $('#group').val(),
-                                    d.searchbox = $('input[name="searching"').val();
-                        },
-                        method: 'get',
-                        dataType: 'json'
-                    },
-                    drawCallback: function (settings) {
-//                        console.info('drawCallback')
-//    console.log('table',tableAttendance);
-//    console.log('table',tableAttendance.fixedColumns().left());
-//   console.log(settings.json);
-                        //do whatever  
-//                        console.info('$("div.dataTables_filter input").val()',searching);
-                    },
-//
-                    dom: 'lrtip',
-//                    dom: 'Blfrtip',
-//        dom: '<"float-left"B><"float-right"f>rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
-                    buttons: [
-                        {
-                            text: 'csv',
-                            extend: 'csvHtml5',
-                            exportOptions: {
-                                columns: ':visible:not(.not-export-col)'
-                            }
-                        },
-                        {
-                            text: 'excel',
-                            extend: 'excelHtml5',
-                            exportOptions: {
-                                columns: ':visible:not(.not-export-col)'
-                            }
-                        },
-                        {
-                            text: 'pdf',
-                            extend: 'pdfHtml5',
-                                            orientation: 'landscape',
-                                            pageSize: 'LEGAL',
-                            exportOptions: {
-                                columns: ':visible:not(.not-export-col)'
-                            }
-                        },
-                        {
-                            text: 'print',
-                            extend: 'print',
-                            exportOptions: {
-                                columns: ':visible:not(.not-export-col)'
-                            }
-                        },
-                    ],
-                    columns: [
-                               {data: 'no_urut', name: 'no_urut'},
-                                  {data: 'orgname', name: 'orgname'},
-                        {data: 'worker_id', name: 'worker_id'},
-                                  {data: null, name: 'nama_personnel', render: function (data, type, row) {
-//                    console.info('info',data);
-                                return '<div class="form-control1" id="" type="text" style="font-size: 0.75rem;padding: .5rem 0;" >' + data.nama_personnel + '</div>';
-                                                // Combine the first and last names into a single table field
-//                return data.nama_personnel;
-                                        }},
-                        {data: 'work_date', name: 'work_date'},
-                        {data: 'time_in_0', name: 'time_in_0'},
-                        {data: 'time_ot_0', name: 'time_ot_0'},
-                        {data: 'time_in_1', name: 'time_in_1'},
-                        {data: 'time_ot_1', name: 'time_ot_1'},
-                        {data: 'time_in_2', name: 'time_in_2'},
-                        {data: 'time_ot_2', name: 'time_ot_2'},
-                        {data: 'time_in_3', name: 'time_in_3'},
-                        {data: 'time_ot_3', name: 'time_ot_3'},
-                        {data: 'time_in_4', name: 'time_in_'},
-                        {data: 'time_ot_4', name: 'time_ot_4'},
-                        {data: 'first_in', name: 'first_in'},
-                        {data: 'last_out', name: 'last_out'},
-                        {data: 'duration', name: 'duration'},
-                        {data: 'total_rest', name: 'total_rest'},
-                        {data: 'ot', name: 'ot'}
-                    ],
+                    dom: 'Blfrtip',
                     lengthMenu: [
                         [10, 25, 50, 100, -1],
                         [10, 25, 50, 100, 'All'],
                     ],
-                    order: [[0, 'asc']]
+                    order: [[0, 'asc']],
                 });
                 $(document).on('click', '.doSearch', function () {
                     var e_date = $('#enddate').val();
@@ -471,23 +415,17 @@ function printDiv(divID) {
                     } else if (tipe == 2) {
                         tableAttendance.button('.buttons-excel').trigger();
                     } else if (tipe == 3) {
-//                        let startdate = $('#startdate').val(),
-//                                enddate = $('#enddate').val(),
-//                                group = $('#group').val();
-//                        let url = "{{ url('report/print') }}";
-//                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "";
-//                        window.open(urlstr);
                         tableAttendance.button('.buttons-pdf').trigger();
                     } else if (tipe == 4) {
                         tableAttendance.button('.buttons-print').trigger();
                     }
                 });
                 $("div.dataTables_filter input").unbind();
-//                $("div.dataTables_filter input").on('keydown', function (e) {
-//                    if (e.which == 13) {
-//                        tableAttendance.draw();
-//                    }
-//                });
+                $("div.dataTables_filter input").on('keydown', function (e) {
+                    if (e.which == 13) {
+                        tableAttendance.draw();
+                    }
+                });
             });
         </script>
         <script src="{{asset('assets/js/report/table.js')}}" type='text/javascript'></script>

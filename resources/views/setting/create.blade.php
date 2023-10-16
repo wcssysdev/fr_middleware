@@ -193,7 +193,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label class="col-md-5 control-label"><strong>Date Time Start</strong> </label>
+                                                        <label class="col-md-5 control-label"><strong>Time Start [Normal work]</strong> </label>
                                                         <div class="col-md-7">
                                                             <input type="text" name="startdate" value="{{$setting->startdate}}" id="startdate" class="form-control" placeholder="Start Date">
                                                             @error('startdate')
@@ -202,11 +202,29 @@
                                                         </div>
                                                     </div>                                                  
                                                     <div class="form-group">
-                                                        <label class="col-md-5 control-label"><strong>Date Time End</strong> </label>
+                                                        <label class="col-md-5 control-label"><strong>Time End [Normal work]</strong> </label>
                                                         <div class="col-md-7">
                                                             <input type="text" name="enddate" value="{{$setting->enddate}}" id="enddate" class="form-control" placeholder="End Date">
                                                         </div>
                                                         @error('enddate')
+                                                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>                                                    
+                                                    <div class="form-group">
+                                                        <label class="col-md-5 control-label"><strong>Time Start [Night work]</strong> </label>
+                                                        <div class="col-md-7">
+                                                            <input type="text" name="starttime_nightwork" value="{{$setting->starttime_nightwork}}" id="starttime_nightwork" class="form-control" placeholder="HH:IS">
+                                                            @error('starttime_nightwork')
+                                                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>                                                  
+                                                    <div class="form-group">
+                                                        <label class="col-md-5 control-label"><strong>Time End [Night work]</strong> </label>
+                                                        <div class="col-md-7">
+                                                            <input type="text" name="endtime_nightwork" value="{{$setting->endtime_nightwork}}" id="endtime_nightwork" class="form-control" placeholder="HH:IS">
+                                                        </div>
+                                                        @error('endtime_nightwork')
                                                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                                                         @enderror
                                                     </div>                                                    
