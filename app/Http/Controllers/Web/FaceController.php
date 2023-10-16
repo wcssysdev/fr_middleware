@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\AccessControl;
+use App\Models\WorkerGroup;
 use DataTables;
 
 class FaceController extends BaseController {
@@ -19,23 +20,25 @@ class FaceController extends BaseController {
         ValidatesRequests;
 
     public function report(Request $request) {
+        $dataview['group'] = WorkerGroup::latest()->get();
         if ($request->ajax()) {
             $data = AccessControl::latest()->get();
             return Datatables::of($data)
                             ->make(true);
         }
 
-        return view('report/index');
+        return view('report/index', $dataview);
     }
 
     public function report_formatted(Request $request) {
+        $dataview['group'] = WorkerGroup::latest()->get();
         if ($request->ajax()) {
             $data = AccessControl::latest()->get();
             return Datatables::of($data)
                             ->make(true);
         }
 //        return view('report/index_pretty_des22');
-        return view('report/index_pretty');
+        return view('report/index_pretty', $dataview);
     }
 
     public function getData_att(Request $request) {
@@ -74,7 +77,17 @@ class FaceController extends BaseController {
             /**
              * kalau enddate antara 00:01 - 11:59 pagi,
              * brarti in / out di range tsb, masih masuk ke hari sebelumnya
+             * 
+             * 2023-10
+             * 
+             * added setting start end time for night work
+             * 
+             *         'starttime_nightwork',
+             *         'endtime_nightwork',
              */
+            $nightwork_starttime = $report_setting->starttime_nightwork;
+            $nightwork_endtime = $report_setting->endtime_nightwork;
+
             if ($setting_sdate[0] !== $setting_edate[0]) {
                 //kalau tanggalnya beda, brarti ada jam day worknya kelewat hari berjalan
             }
@@ -83,6 +96,7 @@ class FaceController extends BaseController {
 //            $strdate = $request->get('startdate');
             $enddate = $request->get('enddate');
             $sdate = $request->get('startdate');
+            $group = trim($request->get('group'));
             if (!empty($sdate)) {
                 $strdate = "$sdate $setting_sdate[1]";
             } else {
@@ -90,23 +104,31 @@ class FaceController extends BaseController {
             }
 //            var_dump([intval(date('His')), intval(str_replace(":", "", $setting_edate[1]))]);
 //            echo "<br/>";
-            if (intval(date('His')) >= intval(str_replace(":", "", $setting_edate[1]))) {
+            /**
+             * IF end time of setting normal work > end time of setting night work
+             */
+            if (intval(str_replace(":", "", $setting_edate[1])) > intval(str_replace(":", "", $nightwork_endtime))) {
+                $endtimework = $nightwork_endtime;
+            } else {
+                $endtimework = $nightwork_endtime;
+            }
+            if (intval(date('His')) >= intval(str_replace(":", "", $endtimework))) {
 //                var_dump(date('His'));
 //                echo "<br/>";
                 $enddate1 = new \DateTime($enddate);
                 $enddate1->modify('+1 day');
-                $enddate = "{$enddate1->format('Y-m-d')} $setting_edate[1]";
+                $enddate = "{$enddate1->format('Y-m-d')} $endtimework";
 //                $strdate = "$enddate 00:00:01";
 //                $enddate = "$enddate 23:59:59";
                 //kalau tanggalnya beda, brarti ada jam day worknya kelewat hari berjalan
             } else {
                 if ($setting_sdate[0] !== $setting_edate[0]) {
                     $startdate1 = new \DateTime($enddate);
-                    $enddate = $startdate1->format("Y-m-d") . " $setting_edate[1]";
+                    $enddate = $startdate1->format("Y-m-d") . " $endtimework";
                     $startdate1->modify('-1 day');
                     $startdate = $startdate1->format("Y-m-d") . " $setting_sdate[1]";
                 } else {
-                    $enddate = "$enddate $setting_edate[1]";
+                    $enddate = "$enddate $endtimework";
                 }
             }
 //            var_dump([$setting_sdate, $setting_edate]);
@@ -132,11 +154,11 @@ class FaceController extends BaseController {
                                 $query->where('alarmtime', '>=', $strdate);
                                 $query->where('alarmtime', '<=', $enddate);
                             })
-                            ->select('fa_accesscontrol.*','fa_person.orgcode','fa_person.orgname')
+                            ->select('fa_accesscontrol.*', 'fa_person.orgcode', 'fa_person.orgname')
                             ->get();
                 } else {
-                    $w_personid = "((personid ilike '%" . $search_val_all . "%')";
-                    $w_personid .= " or (firstname ilike '%" . $search_val_all . "%'))";
+                    $w_personid = "((fa_accesscontrol.personid ilike '%" . $search_val_all . "%')";
+                    $w_personid .= " or (fa_accesscontrol.firstname ilike '%" . $search_val_all . "%'))";
 //                    dd([$w_personid, $search_val_all]);
                     $searchwhere = "%$search_val_all%";
                     $data = DB::table('fa_accesscontrol')
@@ -146,10 +168,18 @@ class FaceController extends BaseController {
                                 $query->where('alarmtime', '<=', $enddate);
                             })
                             ->where(function ($query1) use ($searchwhere) {
-                                $query1->orWhere('personid', 'ilike', $searchwhere);
-                                $query1->orWhere('firstname', 'ilike', $searchwhere);
+                                $query1->orWhere('fa_accesscontrol.personid', 'ilike', $searchwhere);
+                                $query1->orWhere('fa_person.orgname', 'ilike', $searchwhere);
+                                $query1->orWhere('fa_accesscontrol.firstname', 'ilike', $searchwhere);
                             })
-                            ->select('fa_accesscontrol.*','fa_person.orgcode','fa_person.orgname')
+                            ->where(function ($query2) use ($group) {
+                                if (empty($group) || $group == 'ALL') {
+                                    
+                                } else {
+                                    $query2->orWhere('fa_person.orgcode', '=', $group);
+                                }
+                            })
+                            ->select('fa_accesscontrol.*', 'fa_person.orgcode', 'fa_person.orgname')
                             ->get();
                 }
             } else {
@@ -160,7 +190,14 @@ class FaceController extends BaseController {
                             $query->where('alarmtime', '>=', $strdate);
                             $query->where('alarmtime', '<=', $enddate);
                         })
-                        ->select('fa_accesscontrol.*','fa_person.orgcode','fa_person.orgname')
+                        ->where(function ($query2) use ($group) {
+                            if (empty($group) || $group == 'ALL') {
+                                
+                            } else {
+                                $query2->orWhere('fa_person.orgcode', '=', $group);
+                            }
+                        })
+                        ->select('fa_accesscontrol.*', 'fa_person.orgcode', 'fa_person.orgname')
 //                    ->orWhere('personid','ilike',"%".$search_val_all."%")
 //                    ->whereRaw($w_personid)
                         ->get();
@@ -182,7 +219,7 @@ class FaceController extends BaseController {
                 if (empty($new_data[$dt_access->personid])) {
                     $new_data[$dt_access->personid] = $dt_access;
                     $new_data[$dt_access->personid]->nama_personnel = $dt_access->personid;
-                    $new_data[$dt_access->personid]->worker_id = $dt_access->firstname ;
+                    $new_data[$dt_access->personid]->worker_id = $dt_access->firstname;
 //                    $new_data[$dt_access->personid]->nama_personnel = '-';
                     for ($loopInOt = 0; $loopInOt < 5; $loopInOt++) {
                         $new_data[$dt_access->personid]->{"time_in_$loopInOt"} = '';
@@ -206,16 +243,80 @@ class FaceController extends BaseController {
                 $new_data[$personid]->last_out = '0';
 
 //                var_dump($direct);echo PHP_EOL;
-                foreach ($direct as $dir => $listtime) {
-                    if ($dir == 'IN') {
-                        sort($listtime);
-                    } else {
-                        rsort($listtime);
+                /**
+                 * Sorting
+                 * IN ascending timestamp
+                 * OUT descending timestamp
+                 * 
+                 * Becarefull for night work
+                 * 
+                 * OUT timestamp must greater than first IN timestamp
+                 */
+                if (empty($direct['IN'])) {
+                    $swipetime[$personid]['IN'] = [];
+                    $swipetime[$personid]['OUT'] = [];
+                } else {
+                    $dir_in = array_values($direct['IN']);
+                    sort($dir_in);
+                    /**
+                     * Data dengan selisih kurang dari 1 menit, dianggap duplikat
+                     */
+                    $intval_dir_in = preg_replace('/[^0-9]/', '', $dir_in[0]) + 60;
+                    foreach ($dir_in as $k => $v) {
+                        if ($k < 1) {
+                            continue;
+                        }
+
+                        $intval_v = preg_replace('/[^0-9]/', '', $v);
+                        if (intval($intval_v) > $intval_dir_in) {
+                            $intval_dir_in = $intval_v + 60;
+                        } else {
+                            array_splice($dir_in, $k, 1);
+                        }
                     }
-                    $listtime = array_slice($listtime, 0, 5);
-                    $listtime = $listtime + $default_element_time;
-                    $swipetime[$personid][$dir] = $listtime;
+
+                    $direct['IN'] = $dir_in;
+                    $listtime_in = (array_slice($dir_in, 0, 5)) + $default_element_time;
+                    $swipetime[$personid]['IN'] = $listtime_in;
+                    $first_in = $dir_in[0];
+
+                    if (empty($direct['OUT'])) {
+                        $swipetime[$personid]['OUT'] = [];
+                    } else {
+                        $intval_in = intval(preg_replace('/[^0-9]/', '', $first_in)) + 60;
+//                        $dir_out = array_filter($direct['OUT'], function ($v) use ($intval_in) {
+//                            $intval_v = preg_replace('/[^0-9]/', '', $v);
+//                            return intval($intval_v) > $intval_in;
+//                        });
+                        $dir_out = $direct['OUT'];
+                        sort($dir_out);
+                        foreach ($dir_out as $k => $v) {
+
+                            $intval_v = preg_replace('/[^0-9]/', '', $v);
+                            if (intval($intval_v) > $intval_in) {
+                                $intval_in = $intval_v + 60;
+                            } else {
+                                array_splice($dir_out, $k, 1);
+                            }
+                        }
+
+                        rsort($dir_out);
+                        $direct['OUT'] = $dir_out;
+                        $swipetime[$personid]['OUT'] = (array_slice($dir_out, 0, 5)) + $default_element_time;
+                    }
                 }
+
+
+//                foreach ($direct as $dir => $listtime) {
+//                    if ($dir == 'IN') {
+//                        sort($listtime);
+//                    } else {
+//                        rsort($listtime);
+//                    }
+//                    $listtime = array_slice($listtime, 0, 5);
+//                    $listtime = $listtime + $default_element_time;
+//                    $swipetime[$personid][$dir] = $listtime;
+//                }
 
                 $inning_sorted_up = array_filter($swipetime[$personid]['IN']);
                 $outing_sorted_down = array_filter($swipetime[$personid]['OUT']);
@@ -232,7 +333,7 @@ class FaceController extends BaseController {
                         $date_ot = \DateTimeImmutable::createFromFormat($format, $outing_sorted_down[0]);
                         $interval = $date_in->diff($date_ot);
                         if ($interval) {
-                            $new_data[$personid]->duration = $interval->format('%hH%iM');
+                            $new_data[$personid]->duration = $interval->format('%dD%hH%iM');
                         } else {
                             $new_data[$personid]->duration = '0';
                         }
@@ -265,6 +366,7 @@ class FaceController extends BaseController {
                 $total_rest = 0;
                 $start_sum_total_rest = 0;
                 $start_sum_out = "";
+                $days_rests = 0;
                 $hours_rests = 0;
                 $minutes_rests = 0;
                 foreach ($time_in_out as $timing) {
@@ -290,6 +392,7 @@ class FaceController extends BaseController {
 //                                dd([$start_sum_out1,$start_sum_in1]);
                                 $interval = date_diff($start_sum_out1, $start_sum_in1);
 //                            $interval = ((DateTimeImmutable)$start_sum_out1)->diff($start_sum_in1);
+                                $days_rests = $days_rests + ($interval)->format("%d");
                                 $hours_rests = $hours_rests + ($interval)->format("%h");
                                 $minutes_rests = $minutes_rests + ($interval)->format("%i");
                             }
@@ -315,7 +418,7 @@ class FaceController extends BaseController {
                 }
 //                $new_data[$personid]->no_urut = count($swipetime) + 1;
 //                $new_data[$personid]->total_rest = "$hours_rests >> $minutes_rests".$sisa_jam . "h" . ($minutes_rests % 60) . "m";
-                $new_data[$personid]->total_rest = $sisa_jam . "h" . ($minutes_rests) . "m";
+                $new_data[$personid]->total_rest = $days_rests . "d" . $sisa_jam . "h" . ($minutes_rests) . "m";
             }
 //echo json_encode($new_data, 1);die();
 //            dd([$new_data]);
@@ -370,8 +473,10 @@ class FaceController extends BaseController {
                 if (empty($new_data[$dt_access->personid])) {
                     $new_data[$dt_access->personid] = $dt_access;
 //                    $new_data[$dt_access->personid]->nama_personnel = '-';
-                    $new_data[$dt_access->personid]->nama_personnel = $dt_access->personid;
-                    $new_data[$dt_access->personid]->worker_id = $dt_access->firstname ;                    
+                    $nm = wordwrap($dt_access->personid, 8, " ", true);
+                    $new_data[$dt_access->personid]->nama_personnel = $nm;
+                    $fn = wordwrap($dt_access->firstname, 11, "\n", true);
+                    $new_data[$dt_access->personid]->worker_id = $fn;
                     for ($loopInOt = 0; $loopInOt < 5; $loopInOt++) {
                         $new_data[$dt_access->personid]->{"time_in_$loopInOt"} = '';
                         $new_data[$dt_access->personid]->{"time_ot_$loopInOt"} = '';

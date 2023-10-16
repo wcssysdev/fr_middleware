@@ -37,9 +37,6 @@ class SendSapController extends BaseController {
         }
         $setting = Setting::orderBy('fa_setting_id', 'desc')->first();
 
-            $this->keep_alive($setting);die();
-        $this->get_person_group($request, $setting);
-        die();
 		//var_dump([$request->type]);die();
         if (!empty($request->type) && $request->type == 'resend') {
            // $this->keep_alive($setting);
@@ -611,7 +608,7 @@ class SendSapController extends BaseController {
 
     public function keep_alive($report_setting) {
 //        $report_setting = DB::table('fa_setting')->latest('fa_setting_id')->first();
-        $ip_server = '10.10.4.102';
+        $ip_server = $report_setting->ip_server_fr;
         $ops_unit = $report_setting->unit_name;
 //dd($report_setting);
         //Storage::disk('local')->put('_token.txt', 'CHECK');
@@ -726,7 +723,7 @@ class SendSapController extends BaseController {
         curl_setopt($ch_token, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch_token, CURLOPT_CUSTOMREQUEST, 'POST');
         $result_token = curl_exec($ch_token);
-        var_dump($result_token);die();
+ //       var_dump($result_token);exit;
 //        $httpcode_token = curl_getinfo($ch_token, CURLINFO_HTTP_CODE);
         curl_close($ch_token);
         $decoded_res_token = json_decode($result_token, 1);
@@ -837,38 +834,7 @@ class SendSapController extends BaseController {
         $newLog->created_at = $now;
         $newLog->save();
     }
-    
-    protected function get_person_group($request, $report_setting) {
-          $isi_token = Storage::disk('local')->get('_token.txt');
 
-            if ($isi_token) {
-                $exploded_isi_token = explode("|", $isi_token);
-            //var_dump($exploded_isi_token);die();
-                if (count($exploded_isi_token) >= 3) {        
-        $_token = trim($exploded_isi_token[2]);
-        $server = config('face.API_FACEAPI_DOMAIN');
-        $ch = curl_init("http://10.10.4.102/ipms/api/v1.1/vehicle/page?page=1&pageSize=100");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type:application/json;charset=UTF-8',
-            'X-Subject-Token:' . $_token
-                )
-        );
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        $result = curl_exec($ch);
-        var_dump($result);die();
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        //dd($httpcode);
-        curl_close($ch);
-        $zone = config('face.API_ZONE');
-                }
-            }
-        
-//        $this->log_event([], 'do_heartbeat', $now, 'do_heartbeat');        
-    }
-    
     protected function insert_access($ops_unit, $att, $direction, $now) {
         if (AccessControl::where(
                         [

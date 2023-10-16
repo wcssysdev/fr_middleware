@@ -41,6 +41,8 @@ class SettingController extends BaseController {
         $request->validate([
             'startdate' => 'required',
             'enddate' => 'required',
+            'starttime_nightwork' => 'required',
+            'endtime_nightwork' => 'required',            
         ]);
 
         $post = $request->post();
@@ -82,6 +84,8 @@ class SettingController extends BaseController {
         $request->validate([
             'startdate' => 'required',
             'enddate' => 'required',
+            'starttime_nightwork' => 'required',
+            'endtime_nightwork' => 'required',
         ]);
 
         $setting->fill($request->post())->save();
