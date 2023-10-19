@@ -72,6 +72,14 @@
                                 <span class="arrow "></span>
                             </a>
                         </li>
+                        <li class="nav-item ">
+                            <a href="/monthly" class="nav-link nav-toggle">
+                                <i class="fa fa-chart-bar"></i>
+                                <span class="title">Report Monthly</span>
+                                <span class="selected"></span>
+                                <span class="arrow "></span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -149,7 +157,7 @@
         </div>
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.0.4 (20231003)</a>
+                <a> FaceApi IOI V 3.3.0.4 (20231019)</a>
             </div>
             <div class="scroll-to-top" style="display: block;">
                 <i class="icon-arrow-up"></i>

@@ -19,9 +19,11 @@ Route::namespace("Web")
         ->prefix('report')
         ->group(function () {
             Route::get('/', [\App\Http\Controllers\Web\FaceController::class, 'report_formatted'])->name('report');
+            Route::get('/monthly', [\App\Http\Controllers\Web\FaceController::class, 'report_montly'])->name('monthly');
             Route::get('/raw', [\App\Http\Controllers\Web\FaceController::class, 'report'])->name('report_raw');
             Route::get('/data', [\App\Http\Controllers\Web\FaceController::class, 'getData'])->name('data');
             Route::get('/data_beautifullify', [\App\Http\Controllers\Web\FaceController::class, 'getDataFormatted'])->name('data_pretty');
+            Route::get('/data_monthly', [\App\Http\Controllers\Web\FaceController::class, 'getDataMonthly'])->name('data_monthly');
         });
 Route::namespace("Web")
         ->name("web")

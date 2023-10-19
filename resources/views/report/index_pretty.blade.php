@@ -98,6 +98,14 @@
                                     </a>                                    
                                 </li>
                                 <li class="nav-item">
+                                    <a href="{{ route('webmonthly') }}" class="nav-link">
+                                        <i class="fa fa-chart-bar"></i>
+                                        <span class="title">Report Monthly</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow "></span>
+                                    </a>                                    
+                                </li>                                
+                                <li class="nav-item">
                                     <a href="{{ route('weblog') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Log</span>
@@ -212,6 +220,7 @@
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 45px;" aria-label="First IN">First IN</th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 34px;" aria-label="Last OUT">Last OUT</th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Duration">Total Duration</th>
@@ -219,6 +228,8 @@
                                                     <th class="all sorting not-export-col" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="OT Hours">OT Hours</th>
                                                 </tr>
                                                 <tr role="row">                                                           
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
@@ -244,7 +255,7 @@
         </div>
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.0.4 (20231003)</a>
+                <a> FaceApi IOI V 3.3.0.4 (20231019)</a>
             </div>
             <div class="scroll-to-top">
                 <i class="icon-arrow-up"></i>
@@ -442,8 +453,10 @@ function printDiv(divID) {
                         {data: 'time_ot_2', name: 'time_ot_2'},
                         {data: 'time_in_3', name: 'time_in_3'},
                         {data: 'time_ot_3', name: 'time_ot_3'},
-                        {data: 'time_in_4', name: 'time_in_'},
+                        {data: 'time_in_4', name: 'time_in_4'},
                         {data: 'time_ot_4', name: 'time_ot_4'},
+                        {data: 'time_in_5', name: 'time_in_5'},
+                        {data: 'time_ot_5', name: 'time_ot_5'},
                         {data: 'first_in', name: 'first_in'},
                         {data: 'last_out', name: 'last_out'},
                         {data: 'duration', name: 'duration'},
