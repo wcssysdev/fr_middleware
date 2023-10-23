@@ -134,7 +134,7 @@
                                     </a>                                    
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('reportmonthly') }}" class="nav-link">
+                                    <a href="{{ route('webmonthly') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Report Monthly</span>
                                         <span class="selected"></span>

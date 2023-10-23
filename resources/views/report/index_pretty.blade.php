@@ -440,7 +440,7 @@ function printDiv(divID) {
                         {data: 'worker_id', name: 'worker_id'},
                                   {data: null, name: 'nama_personnel', render: function (data, type, row) {
 //                    console.info('info',data);
-                                return '<div class="form-control1" id="" type="text" style="font-size: 0.75rem;padding: .5rem 0;" >' + data.nama_personnel + '</div>';
+                                return '<div class="form-control1" id="" type="text" style="padding: .5rem 0;" >' + data.nama_personnel + '</div>';
                                                 // Combine the first and last names into a single table field
 //                return data.nama_personnel;
                                         }},

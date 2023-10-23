@@ -483,6 +483,8 @@ class FaceController extends BaseController {
              */
             $report_setting = DB::table('fa_setting')->latest('fa_setting_id')->first();
             $setting_sdate = explode(" ", $report_setting->startdate);
+            $time_sdate = substr($setting_sdate[1], 0, 5);
+            $time_sdate_cast = intval(preg_replace('/[^0-9]/', '', $time_sdate));
             $setting_edate = explode(" ", $report_setting->enddate);
 
             /**
@@ -649,6 +651,7 @@ class FaceController extends BaseController {
                  */
                 $dir_in = $direct;
                 $intval_dir_in = 0;
+                $time_dir_in = "";
                 $new_dir = [];
                 foreach ($dir_in as $k => $v) {
                     $type = substr($v, -1);
@@ -661,6 +664,7 @@ class FaceController extends BaseController {
                         $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v);
                         $tgl_v = (String) $tgl_create->format('d/m/Y');
                         $new_dir[$tgl_v][] = $v;
+                        $time_dir_in = $v;
                         continue;
                     }
                     if ($k < 1 && $type == "O") {
@@ -669,22 +673,29 @@ class FaceController extends BaseController {
 
                     if (intval($intval_v) > $intval_dir_in) {
                         $tgl_v = substr($v, 0, 10);
+                        $time_v = substr($v, 11, 5);
                         $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v);
                         $tgl_v = (String) $tgl_create->format('d/m/Y');
                         $tgl_v_exp = explode("/", $tgl_v);
                         if (empty($new_dir[$tgl_v]) && $type == 'O') {
-                            $tglx = intval($tgl_v_exp[0]) - 1;
-                            $tgl_v_exp[0] = str_pad($tglx, 2, "0", STR_PAD_LEFT);
-                            $tglbefore = implode("/", $tgl_v_exp);
-                            if (!empty($new_dir[$tglbefore])) {
-//                                $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tglbefore);
-//                                $tglbefore = (String) $tgl_create->format('d/m/Y');
-                                $new_dir[$tglbefore][] = $v;
+                            $time_v_cast = intval(preg_replace('/[^0-9]/', '', $time_v));
+                            if ($time_v_cast > $time_sdate_cast) {
+                                
                             }
+
+//                            $tglx = intval($tgl_v_exp[0]) - 1;
+//                            $tgl_v_exp[0] = str_pad($tglx, 2, "0", STR_PAD_LEFT);
+//                            $tglbefore = implode("/", $tgl_v_exp);
+//                            if (!empty($new_dir[$tglbefore])) {
+////                                $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tglbefore);
+////                                $tglbefore = (String) $tgl_create->format('d/m/Y');
+//                                $new_dir[$tglbefore][] = $v;
+//                            }
                         } else {
 //                            $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v);
 //                            $tgl_v = (String)$tgl_create->format('d/m/Y');
                             $new_dir[$tgl_v][] = $v;
+                            $time_dir_in = $v;
                         }
                         $intval_dir_in = intval($intval_v) + 60;
                     }

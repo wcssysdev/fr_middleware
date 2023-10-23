@@ -422,7 +422,7 @@ function printDiv(divID) {
                 while (currentDate <= endDate) {
 
                     var weekDay = currentDate.getDay();
-                    if (weekDay != 0 && weekDay != 6) {
+//                    if (weekDay != 0 && weekDay != 6) {
                         result++;
                         let tgl = currentDate.getDate();
                         let curdate = currentDate.toLocaleDateString('id');
@@ -431,7 +431,7 @@ function printDiv(divID) {
                         } else {
                         }
                         dateArr.push(curdate);
-                    }
+//                    }
                     currentDate.setDate(currentDate.getDate() + 1);
 
                 }
