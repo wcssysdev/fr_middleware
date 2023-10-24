@@ -242,7 +242,7 @@ class FaceController extends BaseController {
                     $nm = wordwrap($dt_access->personid, 8, "\n", true);
                     $new_data[$dt_access->personid]->nama_personnel = $nm;
                     $fn = wordwrap($dt_access->firstname, 8, "\n", true);
-                    $new_data[$dt_access->personid]->worker_id = $fn;                    
+                    $new_data[$dt_access->personid]->worker_id = $fn;
 //                    $new_data[$dt_access->personid]->nama_personnel = '-';
                     for ($loopInOt = 0; $loopInOt < 6; $loopInOt++) {
                         $new_data[$dt_access->personid]->{"time_in_$loopInOt"} = '';
@@ -352,13 +352,17 @@ class FaceController extends BaseController {
                     $swipetime[$personid]['first_in'] = $inning_sorted_up[0];
                     $new_data[$personid]->first_in = $inning_sorted_up[0];
                     $date_in = \DateTimeImmutable::createFromFormat($format, $inning_sorted_up[0]);
-                    $new_data[$personid]->work_date = $date_in->format('Y-m-d');
-                    if (!empty($outing_sorted_down[0])) {
+                    if ($date_in) {
+                        $new_data[$personid]->work_date = $date_in->format('Y-m-d');
+                    } else {
+                        $new_data[$personid]->work_date = '';
+                    }
+                    if ($date_in && !empty($outing_sorted_down[0])) {
                         $swipetime[$personid]['last_out'] = $outing_sorted_down[0];
                         $new_data[$personid]->last_out = $outing_sorted_down[0];
                         $date_ot = \DateTimeImmutable::createFromFormat($format, $outing_sorted_down[0]);
-                        $interval = $date_in->diff($date_ot);
-                        if ($interval) {
+                        if ($date_ot) {
+                            $interval = $date_in->diff($date_ot);
                             $new_data[$personid]->duration = $interval->format('%dD%hH%iM');
                         } else {
                             $new_data[$personid]->duration = '0';
