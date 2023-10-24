@@ -642,7 +642,8 @@ class FaceController extends BaseController {
                     $new_data[$dt_access->personid] = new \stdClass();
                     $new_data[$dt_access->personid]->orgname = $dt_access->orgname;
                     $new_data[$dt_access->personid]->orgcode = $dt_access->orgcode;
-                    $new_data[$dt_access->personid]->nama_personnel = $dt_access->personid;
+                    $wrapped_id = wordwrap($dt_access->personid, 5, " ", true);
+                    $new_data[$dt_access->personid]->nama_personnel = $wrapped_id;
                     $new_data[$dt_access->personid]->worker_id = $dt_access->firstname;
                 }
                 if ($dt_access->accesstype == "OUT") {
@@ -768,7 +769,7 @@ class FaceController extends BaseController {
 
 //                    echo "$tgl =".$hours_rests . "h" . ($minutes_rests) . "m"."\n";
                     if ($hours_rests + $minutes_rests > 0) {
-                        $swipetime[$personid][(string) $tgl] = $hours_rests . "h" . ($minutes_rests) . "m";
+                        $swipetime[$personid][(string) $tgl] = $hours_rests . "h " . ($minutes_rests) . "m";
                     } else {
                         $swipetime[$personid][(string) $tgl] = '';
                     }

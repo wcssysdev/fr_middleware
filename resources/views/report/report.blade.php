@@ -1,7 +1,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>FR Time Attendance</title>
+        <title>FR Monthly Report</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta name="robots" content="noindex,nofollow">
@@ -213,7 +213,7 @@
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label=" "> No. </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="60px" aria-label=" ID"> Group </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Code </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label=" name"> Emp. Name </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" name"> Emp. Name </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -348,14 +348,18 @@ function printDiv(divID) {
             var tableAttendance;
             var searching;
             var columntbl;
+            var columnWidth;
             const columnInit = [
-                    {data: 'no_urut', name: 'no_urut'},
-                    {data: 'orgname', name: 'orgname'},
-                    {data: 'worker_id', name: 'worker_id'},
-                    {data: 'nama_personnel', name: 'nama_personnel'}
-                ];
+                {data: 'no_urut', name: 'no_urut'},
+                {data: 'orgname', name: 'orgname'},
+                {data: 'worker_id', name: 'worker_id'},
+                {data: 'nama_personnel', name: 'nama_personnel'}
+            ];
+            const clmWdth = ['3%', '1.75%', '3%', '5%'];
+
             $(document).ready(function () {
                 columntbl = columnInit;
+                columnWidth = clmWdth;
                 createTable();
                 $(document).on('click', '.doSearch', function () {
                     if (typeof tableAttendance !== 'undefined') {
@@ -377,15 +381,21 @@ function printDiv(divID) {
                     let ths = createHeaderColumnOfDateFromArray(workingDays);
                     $(tbl_tr_clone).append(ths);
                     $('#att_table').find('thead').html(tbl_tr_clone);
-                    console.info('columnInit', columnInit);
+//                    console.info('columnInit', columnInit);
                     columntbl = [];
-                    for(var k in columnInit){
+                    for (var k in columnInit) {
                         columntbl.push(columnInit[k]);
                     }
-                    for (var j in workingDays) {
-                        columntbl.push({data: workingDays[j], name: workingDays[j]});
+                    columnWidth = [];
+                    for (var k in clmWdth) {
+                        columnWidth.push(clmWdth[k]);
                     }
-                    console.info('columntbl', columntbl);
+                    for (var j in workingDays) {
+                        console.info('workingDays' + j, workingDays[j]);
+                        columntbl.push({data: workingDays[j], searchable: false, orderable: false});
+                        columnWidth.push('3%');
+                    }
+//                    console.info('columntbl', columntbl,'columnWidth',columnWidth);
                     createTable();
                     tableAttendance.draw();
                 });
@@ -423,14 +433,21 @@ function printDiv(divID) {
 
                     var weekDay = currentDate.getDay();
 //                    if (weekDay != 0 && weekDay != 6) {
-                        result++;
-                        let tgl = currentDate.getDate();
-                        let curdate = currentDate.toLocaleDateString('id');
-                        if (tgl < 10) {
-                            curdate = "0" + currentDate.toLocaleDateString('id');
-                        } else {
-                        }
-                        dateArr.push(curdate);
+                    result++;
+                    let tgl = currentDate.getDate();
+                    let mm = parseInt(currentDate.getMonth()) + 1;
+                    let yy = currentDate.getFullYear();
+                    let curdate = currentDate.toLocaleDateString('id');
+//                    console.info('days', curdate, tgl,  parseInt(tgl));
+                    if (parseInt(tgl) < 10) {
+                        tgl = "0" + tgl;
+                    }
+                    if (parseInt(mm) < 10) {
+                        mm = "0" + mm;
+                    }
+                    curdate = tgl + "/" + mm + "/" + yy;
+//                    console.info('days', curdate);
+                    dateArr.push(curdate);
 //                    }
                     currentDate.setDate(currentDate.getDate() + 1);
 
@@ -509,7 +526,12 @@ function printDiv(divID) {
                             text: 'pdf',
                             extend: 'pdfHtml5',
                                             orientation: 'landscape',
-                                            pageSize: 'LEGAL',
+                                            pageSize: 'A4',
+                            customize: function (doc) {
+                                doc.styles.tableHeader.fontSize = 8;
+                                doc.defaultStyle.fontSize = 7;
+                                doc.content[1].table.widths = columnWidth;
+                            },
                             exportOptions: {
                                 columns: ':visible:not(.not-export-col)'
                             }
