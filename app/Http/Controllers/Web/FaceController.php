@@ -237,8 +237,12 @@ class FaceController extends BaseController {
             foreach ($arr_data as $dt_access) {
                 if (empty($new_data[$dt_access->personid])) {
                     $new_data[$dt_access->personid] = $dt_access;
-                    $new_data[$dt_access->personid]->nama_personnel = $dt_access->personid;
-                    $new_data[$dt_access->personid]->worker_id = $dt_access->firstname;
+//                    $new_data[$dt_access->personid]->nama_personnel = $dt_access->personid;
+//                    $new_data[$dt_access->personid]->worker_id = $dt_access->firstname;
+                    $nm = wordwrap($dt_access->personid, 8, "\n", true);
+                    $new_data[$dt_access->personid]->nama_personnel = $nm;
+                    $fn = wordwrap($dt_access->firstname, 8, "\n", true);
+                    $new_data[$dt_access->personid]->worker_id = $fn;                    
 //                    $new_data[$dt_access->personid]->nama_personnel = '-';
                     for ($loopInOt = 0; $loopInOt < 6; $loopInOt++) {
                         $new_data[$dt_access->personid]->{"time_in_$loopInOt"} = '';
@@ -422,7 +426,8 @@ class FaceController extends BaseController {
                             $start_sum_out = "";
                         }
 //                        $datetime = \DateTimeImmutable::createFromFormat($format, $dttime);
-                        $new_data[$personid]->{"time_in_$loopIn"} = $dttime;
+                        $dttime_wwrap = wordwrap($dttime, 10, "\n", true);
+                        $new_data[$personid]->{"time_in_$loopIn"} = $dttime_wwrap;
                         $loopOt = $loopIn;
                         $loopIn++;
                     }

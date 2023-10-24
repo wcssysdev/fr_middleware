@@ -210,36 +210,36 @@
                                         <table class="table table-bordered table-hover" style="font-size:8px;" id="att_table">
                                             <thead>
                                                 <tr role="row">                                                           
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" width="30px" aria-label=" "> No. </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" width="60px" aria-label=" ID"> Group </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Code </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" width="30px" aria-label=" name"> Emp. Name </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" width="30px" aria-label=" work_date"> Work Date </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 170px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" "> No. </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" ID"> Group </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Cd </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 125px; text-align: left;" aria-label=" name"> Emp. Nm </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 122px; text-align: left;" aria-label=" work_date"> Work Date </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 200px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 200px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 200px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 200px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 200px; text-align: center;" aria-label="Time"> Time </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 200px; text-align: center;" aria-label="Time"> Time </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 45px;" aria-label="First IN">First IN</th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 34px;" aria-label="Last OUT">Last OUT</th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Duration">Total Duration</th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Duration">Total Dur.</th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Rest">Total Rest</th>
                                                     <th class="all sorting not-export-col" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="OT Hours">OT Hours</th>
                                                 </tr>
                                                 <tr role="row">                                                           
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 84px;" aria-label="OUT"> OUT </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="IN"> IN </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="OUT"> OUT </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="IN"> IN </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="OUT"> OUT </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="IN"> IN </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="OUT"> OUT </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="IN"> IN </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="OUT"> OUT </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="IN"> IN </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="OUT"> OUT </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="IN"> IN </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 102px;" aria-label="OUT"> OUT </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -339,11 +339,12 @@ function printDiv(divID) {
     //Get the HTML of whole page
     var oldPage = document.body.innerHTML;
     //Reset the page's HTML with div's HTML only
+    console.info('html', divElements);
     document.body.innerHTML =
             "<html><head><title></title></head><body>" +
             divElements + "</body>";
     //Print Page
-    window.print();
+//    window.print();
     //Restore orignal HTML
     document.body.innerHTML = oldPage;
 }
@@ -422,6 +423,10 @@ function printDiv(divID) {
                             extend: 'pdfHtml5',
                                             orientation: 'landscape',
                                             pageSize: 'LEGAL',
+                            customize: function (doc) {
+                                doc.styles.tableHeader.fontSize = 8;    
+                                doc.defaultStyle.fontSize = 7;
+                            },
                             exportOptions: {
                                 columns: ':visible:not(.not-export-col)'
                             }
@@ -435,15 +440,13 @@ function printDiv(divID) {
                         },
                     ],
                     columns: [
-                               {data: 'no_urut', name: 'no_urut'},
+                                  {data: 'no_urut', name: 'no_urut'},
                                   {data: 'orgname', name: 'orgname'},
                         {data: 'worker_id', name: 'worker_id'},
-                                  {data: null, name: 'nama_personnel', render: function (data, type, row) {
-//                    console.info('info',data);
-                                return '<div class="form-control1" id="" type="text" style="padding: .5rem 0;" >' + data.nama_personnel + '</div>';
-                                                // Combine the first and last names into a single table field
-//                return data.nama_personnel;
-                                        }},
+                        {data: 'nama_personnel', name: 'nama_personnel'},
+//                                  {data: null, name: 'work_date', render: function (data, type, row) {
+//                                return '<div class="form-control1" id="" type="text" style="" >' + data.work_date + '</div>';
+//                                        }},                        
                         {data: 'work_date', name: 'work_date'},
                         {data: 'time_in_0', name: 'time_in_0'},
                         {data: 'time_ot_0', name: 'time_ot_0'},
@@ -504,7 +507,7 @@ function printDiv(divID) {
             });
         </script>
         <script src="{{asset('assets/js/report/table.js')}}" type='text/javascript'></script>
-        <style>
+        <style type="text/css">
             .dt-buttons {
                 display: none;
             }
@@ -571,6 +574,16 @@ function printDiv(divID) {
                 font-size: 0.8rem;
                 vertical-align: middle;
                 margin-right: 5px;
+            }
+            @media print and (width: 9.5in) and (height: 14in) {
+                @page {
+                    margin: 1in;
+                }
+                body {
+                    margin: 0;
+                    color: #f00;
+                    background-color: #0ff;
+                }
             }
         </style>        
     </body>
