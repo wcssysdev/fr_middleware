@@ -80,7 +80,7 @@ class FaceController extends BaseController {
 
     public function getDataFormatted(Request $request) {
         if ($request->ajax()) {
-            $zone = env('API_ZONE', 'ID');
+            $zone = env('API_ZONE', 'MY');
             if ($zone == 'MY') {
                 date_default_timezone_set('Asia/Kuala_Lumpur');
             } else {
@@ -121,21 +121,26 @@ class FaceController extends BaseController {
             } else {
                 $strdate = "$enddate $setting_sdate[1]";
             }
-//            var_dump([intval(date('His')), intval(str_replace(":", "", $setting_edate[1]))]);
+//            var_dump([(date('His')),intval(str_replace(":", "", $nightwork_endtime)), intval(str_replace(":", "", substr($setting_edate[1],0,5)))]);
 //            echo "<br/>";
+
+
             /**
              * IF end time of setting normal work > end time of setting night work
              */
-            if (intval(str_replace(":", "", $setting_edate[1])) > intval(str_replace(":", "", $nightwork_endtime))) {
-                $endtimework = $nightwork_endtime;
+            if (intval(str_replace(":", "", substr($setting_edate[1], 0, 5))) > intval(str_replace(":", "", $nightwork_endtime))) {
+                $endtimework = $setting_edate[1];
             } else {
                 $endtimework = $nightwork_endtime;
             }
+
+            $enddate_01 = "$enddate 00:00:01";
             if (intval(date('His')) >= intval(str_replace(":", "", $endtimework))) {
 //                var_dump(date('His'));
 //                echo "<br/>";
                 $enddate1 = new \DateTime($enddate);
                 $enddate1->modify('+1 day');
+                $enddate_01 = "{$enddate1->format('Y-m-d')} 00:00:01";
                 $enddate = "{$enddate1->format('Y-m-d')} $endtimework";
 //                $strdate = "$enddate 00:00:01";
 //                $enddate = "$enddate 23:59:59";
@@ -144,8 +149,9 @@ class FaceController extends BaseController {
                 if ($setting_sdate[0] !== $setting_edate[0]) {
                     $startdate1 = new \DateTime($enddate);
                     $enddate = $startdate1->format("Y-m-d") . " $endtimework";
+                    $enddate_01 = "{$startdate1->format('Y-m-d')} 00:00:01";
                     $startdate1->modify('-1 day');
-                    $startdate = $startdate1->format("Y-m-d") . " $setting_sdate[1]";
+                    $strdate = $startdate1->format("Y-m-d") . " $setting_sdate[1]";
                 } else {
                     $enddate = "$enddate $endtimework";
                 }
@@ -153,6 +159,8 @@ class FaceController extends BaseController {
 //            var_dump([$setting_sdate, $setting_edate]);
 //            echo "<br/>";
 //            var_dump([$setting_sdate[0], $setting_edate[0]]);
+//            echo "<br/>";
+//            var_dump([$strdate, $enddate]);
 //            echo "<br/>";
 
             $search_val_all = $request->get('searchbox');
@@ -164,14 +172,22 @@ class FaceController extends BaseController {
                     $strdate1 = $date_search->format('Y-m-d');
                     $strdate = "$strdate1 $setting_sdate[1]";
                     $enddate1 = date('Y-m-d', strtotime($strdate1 . ' +1 day'));
+                    $enddate_01 = "$enddate1 00:00:01";
                     $enddate = "$enddate1 $setting_edate[1]";
 //                    var_dump([$strdate, $enddate]);
                     $searchwhere = "%$search_val_all%";
                     $data = DB::table('fa_accesscontrol')
                             ->leftJoin('fa_person', 'fa_person.firstname', '=', 'fa_accesscontrol.firstname')
-                            ->where(function ($query) use ($strdate, $enddate) {
-                                $query->where('alarmtime', '>=', $strdate);
-                                $query->where('alarmtime', '<=', $enddate);
+                            ->where(function ($query) use ($strdate, $enddate, $enddate_01) {
+                                $query->where(function ($query2) use ($strdate, $enddate_01) {
+                                    $query2->where('alarmtime', '>=', $strdate);
+                                    $query2->where('alarmtime', '<', $enddate_01);
+                                });
+                                $query->orWhere(function ($query2) use ($enddate_01, $enddate) {
+                                    $query2->where('alarmtime', '>=', $enddate_01);
+                                    $query2->where('alarmtime', '<=', $enddate);
+                                    $query2->where('fa_accesscontrol.accesstype', 'OUT', $enddate);
+                                });
                             })
                             ->select('fa_accesscontrol.*', 'fa_person.orgcode', 'fa_person.orgname')
                             ->get();
@@ -179,12 +195,20 @@ class FaceController extends BaseController {
                     $w_personid = "((fa_accesscontrol.personid ilike '%" . $search_val_all . "%')";
                     $w_personid .= " or (fa_accesscontrol.firstname ilike '%" . $search_val_all . "%'))";
 //                    dd([$w_personid, $search_val_all]);
+//                    var_dump([$strdate, $enddate,$enddate_01]);                    
                     $searchwhere = "%$search_val_all%";
                     $data = DB::table('fa_accesscontrol')
                             ->leftJoin('fa_person', 'fa_person.firstname', '=', 'fa_accesscontrol.firstname')
-                            ->where(function ($query) use ($strdate, $enddate) {
-                                $query->where('alarmtime', '>=', $strdate);
-                                $query->where('alarmtime', '<=', $enddate);
+                            ->where(function ($query) use ($strdate, $enddate, $enddate_01) {
+                                $query->where(function ($query2) use ($strdate, $enddate_01) {
+                                    $query2->where('alarmtime', '>=', $strdate);
+                                    $query2->where('alarmtime', '<', $enddate_01);
+                                });
+                                $query->orWhere(function ($query2) use ($enddate_01, $enddate) {
+                                    $query2->where('alarmtime', '>=', $enddate_01);
+                                    $query2->where('alarmtime', '<=', $enddate);
+                                    $query2->where('fa_accesscontrol.accesstype', 'OUT', $enddate);
+                                });
                             })
                             ->where(function ($query1) use ($searchwhere) {
                                 $query1->orWhere('fa_accesscontrol.personid', 'ilike', $searchwhere);
@@ -205,9 +229,16 @@ class FaceController extends BaseController {
 //                dd([$strdate,$enddate]);
                 $data = DB::table('fa_accesscontrol')
                         ->leftJoin('fa_person', 'fa_person.firstname', '=', 'fa_accesscontrol.firstname')
-                        ->where(function ($query) use ($strdate, $enddate) {
-                            $query->where('alarmtime', '>=', $strdate);
-                            $query->where('alarmtime', '<=', $enddate);
+                        ->where(function ($query) use ($strdate, $enddate, $enddate_01) {
+                            $query->where(function ($query2) use ($strdate, $enddate_01) {
+                                $query2->where('alarmtime', '>=', $strdate);
+                                $query2->where('alarmtime', '<', $enddate_01);
+                            });
+                            $query->orWhere(function ($query2) use ($enddate_01, $enddate) {
+                                $query2->where('alarmtime', '>=', $enddate_01);
+                                $query2->where('alarmtime', '<=', $enddate);
+                                $query2->where('fa_accesscontrol.accesstype', 'OUT', $enddate);
+                            });
                         })
                         ->where(function ($query2) use ($group) {
                             if (empty($group) || $group == 'ALL') {
@@ -529,8 +560,8 @@ class FaceController extends BaseController {
             /**
              * IF end time of setting normal work > end time of setting night work
              */
-            if (intval(str_replace(":", "", $setting_edate[1])) > intval(str_replace(":", "", $nightwork_endtime))) {
-                $endtimework = $nightwork_endtime;
+            if (intval(str_replace(":", "", substr($setting_edate[1], 0, 5))) > intval(str_replace(":", "", $nightwork_endtime))) {
+                $endtimework = $setting_edate[1];
             } else {
                 $endtimework = $nightwork_endtime;
             }
@@ -548,7 +579,7 @@ class FaceController extends BaseController {
                     $startdate1 = new \DateTime($enddate);
                     $enddate = $startdate1->format("Y-m-d") . " $endtimework";
                     $startdate1->modify('-1 day');
-                    $startdate = $startdate1->format("Y-m-d") . " $setting_sdate[1]";
+                    $strdate = $startdate1->format("Y-m-d") . " $setting_sdate[1]";
                 } else {
                     $enddate = "$enddate $endtimework";
                 }

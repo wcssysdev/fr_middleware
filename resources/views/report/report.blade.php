@@ -476,7 +476,7 @@ function printDiv(divID) {
                         processing: 'Please wait...'
 //            processing: '<div class="spinner"></div>'
                     },
-                    serverSide: true,
+                    serverSide: false,
                     autoWidth: false,
 //                            scrollY: "300px",
                             scrollX: true,
@@ -484,6 +484,7 @@ function printDiv(divID) {
                     ajax: {
                         url: "{{ url('report/data_monthly') }}",
                         data: function (d) {
+//                            d.columns = [];
                             d.startdate = $('#startdate').val(),
                                     d.enddate = $('#enddate').val(),
                                     d.group = $('#group').val(),

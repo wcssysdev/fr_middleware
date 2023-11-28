@@ -362,6 +362,45 @@ function printDiv(divID) {
             var tableAttendance;
             var searching;
             $(document).ready(function () {
+                createTable();
+                $(document).on('click', '.doSearch', function (e) {
+                    if (typeof tableAttendance !== 'undefined') {
+                        tableAttendance.clear().destroy();
+                    }                    
+                    var e_date = $('#enddate').val();
+                    console.info('edate', e_date);
+                    if (e_date == '') {
+                        return false;
+                    }
+                    createTable();
+                });
+                $(document).on('click', '#export_transaction_btn', function (i) {
+                    var tipe = i.target.dataset.type;
+                    if (tipe == 1) {
+                        tableAttendance.button('.buttons-csv').trigger();
+                    } else if (tipe == 2) {
+                        tableAttendance.button('.buttons-excel').trigger();
+                    } else if (tipe == 3) {
+//                        let startdate = $('#startdate').val(),
+//                                enddate = $('#enddate').val(),
+//                                group = $('#group').val();
+//                        let url = "{{ url('report/print') }}";
+//                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "";
+//                        window.open(urlstr);
+                        tableAttendance.button('.buttons-pdf').trigger();
+                    } else if (tipe == 4) {
+                        tableAttendance.button('.buttons-print').trigger();
+                    }
+                });
+                $("div.dataTables_filter input").unbind();
+//                $("div.dataTables_filter input").on('keydown', function (e) {
+//                    if (e.which == 13) {
+//                        tableAttendance.draw();
+//                    }
+//                });
+            });
+            
+            function createTable(){
                 tableAttendance = $('#att_table').DataTable({
 //                    processing: true,
                     autoFilter: false,
@@ -371,7 +410,7 @@ function printDiv(divID) {
                         processing: 'Please wait...'
 //            processing: '<div class="spinner"></div>'
                     },
-                    serverSide: true,
+                    serverSide: false,
                     autoWidth: true,
 //        scrollY:        "300px",
                             scrollX: true,
@@ -473,40 +512,8 @@ function printDiv(divID) {
                         [10, 25, 50, 100, 'All'],
                     ],
                     order: [[0, 'asc']]
-                });
-                $(document).on('click', '.doSearch', function () {
-                    var e_date = $('#enddate').val();
-//                    console.info('edate', e_date);
-                    if (e_date == '') {
-                        return false;
-                    }
-                    tableAttendance.draw();
-                });
-                $(document).on('click', '#export_transaction_btn', function (i) {
-                    var tipe = i.target.dataset.type;
-                    if (tipe == 1) {
-                        tableAttendance.button('.buttons-csv').trigger();
-                    } else if (tipe == 2) {
-                        tableAttendance.button('.buttons-excel').trigger();
-                    } else if (tipe == 3) {
-//                        let startdate = $('#startdate').val(),
-//                                enddate = $('#enddate').val(),
-//                                group = $('#group').val();
-//                        let url = "{{ url('report/print') }}";
-//                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "";
-//                        window.open(urlstr);
-                        tableAttendance.button('.buttons-pdf').trigger();
-                    } else if (tipe == 4) {
-                        tableAttendance.button('.buttons-print').trigger();
-                    }
-                });
-                $("div.dataTables_filter input").unbind();
-//                $("div.dataTables_filter input").on('keydown', function (e) {
-//                    if (e.which == 13) {
-//                        tableAttendance.draw();
-//                    }
-//                });
-            });
+                });                
+            }
         </script>
         <script src="{{asset('assets/js/report/table.js')}}" type='text/javascript'></script>
         <style type="text/css">

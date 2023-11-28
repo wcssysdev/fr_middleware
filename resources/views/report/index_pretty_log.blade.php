@@ -366,7 +366,7 @@ function printDiv(divID) {
                         processing: 'Please wait...'
 //            processing: '<div class="spinner"></div>'
                     },
-                    serverSide: true,
+                    serverSide: false,
                     autoWidth: true,
 //        scrollY:        "300px",
                             scrollX: false,
@@ -378,6 +378,7 @@ function printDiv(divID) {
                     ajax: {
                         url: "{{ url('log/data_beautifullify_log') }}",
                         data: function (d) {
+                            d.columns = [];
                             d.enddate = $('#enddate').val(),
                                     d.status = $('#status').val(),
                                     d.searchbox = $("div.dataTables_filter input").val()
