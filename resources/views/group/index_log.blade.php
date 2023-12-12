@@ -183,7 +183,7 @@
                                     <div class="actions">
                                         <div class="btn-group btn-group-devided" >
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download" ></i> Excel</button>
-                                            <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Get Data</button>
+                                            <!--<button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Get Data</button>-->
                                         </div>
                                     </div>
                                 </div>
@@ -214,7 +214,7 @@
         </div>
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.0.4 (20231019)</a>
+                <a> FaceApi IOI V 3.3.1.0 (20231212)</a>
             </div>
             <div class="scroll-to-top">
                 <i class="icon-arrow-up"></i>
@@ -263,6 +263,39 @@
         <link type="text/css" href="{{asset('vendor/datatables/js/dataTables.checkboxes.css')}}" rel="stylesheet" />
         <script type="text/javascript" src="{{asset('vendor/datatables/js/dataTables.checkboxes.min.js')}}"></script>
         <script type="text/javascript">
+var timer_grp = {
+    interval: null,
+    seconds: 1800,
+    start: function () {
+        var self = this;
+        this.interval = setInterval(function () {
+            self.seconds--;
+
+            if (self.seconds == 0) {
+                //window.location.reload();
+                self.seconds = 1800;
+                $.ajax({
+                    method: "POST",
+                    url: "group.pull",
+                    beforeSend: function () {
+                        $('#spinner-div').show();
+                    },
+                    dataType: 'json',
+                    success: function (msg) {
+                        $('#spinner-div').hide();
+                        if (msg.status > 0) {
+                            tableAttendance.draw();
+                        } 
+                    }
+                });
+            }
+        }, 1000);
+    },
+
+    stop: function () {
+        window.clearInterval(this.interval);
+    }
+}
 function myFunction() {
     location.reload();
 }
@@ -273,7 +306,8 @@ $(document).ready(function ()
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-})
+    timer_grp.start();
+});
 
 function printDiv(divID) {
     //Get the HTML of div
@@ -365,24 +399,24 @@ function printDiv(divID) {
                     } else if (tipe == 2) {
                         tableAttendance.button('.buttons-excel').trigger();
                     } else if (tipe == 99) {
-                        $.ajax({
-                            method: "POST",
-                            url: "group.pull",
-                            beforeSend: function () {
-                                $('#spinner-div').show();
-                            },
-                            dataType: 'json',
-                            success: function (msg) {
-                                $('#spinner-div').hide();
-                                if (msg.status > 0) {
-                                    alert("Get data completed.");
-                                    tableAttendance.draw();
-                                } else {
-                                    var txt = 'Fail get data.' + msg.message
-                                    alert(txt)
-                                }
-                            }
-                        })
+//                        $.ajax({
+//                            method: "POST",
+//                            url: "group.pull",
+//                            beforeSend: function () {
+//                                $('#spinner-div').show();
+//                            },
+//                            dataType: 'json',
+//                            success: function (msg) {
+//                                $('#spinner-div').hide();
+//                                if (msg.status > 0) {
+//                                    alert("Get data completed.");
+//                                    tableAttendance.draw();
+//                                } else {
+//                                    var txt = 'Fail get data.' + msg.message
+//                                    alert(txt)
+//                                }
+//                            }
+//                        })
                     }
                 });
                 $("div.dataTables_filter input").unbind();

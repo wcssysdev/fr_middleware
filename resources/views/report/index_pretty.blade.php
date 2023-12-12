@@ -255,7 +255,7 @@
         </div>
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.0.4 (20231019)</a>
+                <a> FaceApi IOI V 3.3.1.0 (20231212)</a>
             </div>
             <div class="scroll-to-top">
                 <i class="icon-arrow-up"></i>
@@ -379,14 +379,15 @@ function printDiv(divID) {
                     if (tipe == 1) {
                         tableAttendance.button('.buttons-csv').trigger();
                     } else if (tipe == 2) {
-                        tableAttendance.button('.buttons-excel').trigger();
+//                        tableAttendance.button('.buttons-excel').trigger();
+                        let startdate = $('#startdate').val(),
+                                enddate = $('#enddate').val(),
+                                group = $('#group').val(),
+                                search = $('input[name="searching"]').val();
+                        let url = "{{ url('report/print') }}";
+                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate+ "&searchbox=" + search + "";
+                        window.open(urlstr);
                     } else if (tipe == 3) {
-//                        let startdate = $('#startdate').val(),
-//                                enddate = $('#enddate').val(),
-//                                group = $('#group').val();
-//                        let url = "{{ url('report/print') }}";
-//                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "";
-//                        window.open(urlstr);
                         tableAttendance.button('.buttons-pdf').trigger();
                     } else if (tipe == 4) {
                         tableAttendance.button('.buttons-print').trigger();

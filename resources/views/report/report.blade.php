@@ -229,7 +229,7 @@
         </div>
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.0.4 (20231019)</a>
+                <a> FaceApi IOI V 3.3.1.0 (20231212)</a>
             </div>
             <div class="scroll-to-top">
                 <i class="icon-arrow-up"></i>
@@ -391,7 +391,7 @@ function printDiv(divID) {
                         columnWidth.push(clmWdth[k]);
                     }
                     for (var j in workingDays) {
-                        console.info('workingDays' + j, workingDays[j]);
+//                        console.info('workingDays' + j, workingDays[j]);
                         columntbl.push({data: workingDays[j], searchable: false, orderable: false});
                         columnWidth.push('3%');
                     }
@@ -404,7 +404,15 @@ function printDiv(divID) {
                     if (tipe == 1) {
                         tableAttendance.button('.buttons-csv').trigger();
                     } else if (tipe == 2) {
-                        tableAttendance.button('.buttons-excel').trigger();
+//                        tableAttendance.button('.buttons-excel').trigger();
+//                        tableAttendance.button('.buttons-excel').trigger();
+                        let startdate = $('#startdate').val(),
+                                enddate = $('#enddate').val(),
+                                group = $('#group').val(),
+                                search = $('input[name="searching"]').val();
+                        let url = "{{ url('report/export_monthly') }}";
+                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate+ "&searchbox=" + search + "";
+                        window.open(urlstr);
                     } else if (tipe == 3) {
 //                        let startdate = $('#startdate').val(),
 //                                enddate = $('#enddate').val(),

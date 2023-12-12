@@ -24,6 +24,8 @@ Route::namespace("Web")
             Route::get('/data', [\App\Http\Controllers\Web\FaceController::class, 'getData'])->name('data');
             Route::get('/data_beautifullify', [\App\Http\Controllers\Web\FaceController::class, 'getDataFormatted'])->name('data_pretty');
             Route::get('/data_monthly', [\App\Http\Controllers\Web\FaceController::class, 'getDataMonthly'])->name('data_monthly');
+            Route::get('/print', [\App\Http\Controllers\Web\FaceController::class, 'export'])->name('report_excel');
+            Route::get('/export_monthly', [\App\Http\Controllers\Web\FaceController::class, 'export_monthly'])->name('report_excel_monthly');
         });
 Route::namespace("Web")
         ->name("web")
