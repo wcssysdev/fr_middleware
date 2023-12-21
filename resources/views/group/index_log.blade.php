@@ -263,39 +263,40 @@
         <link type="text/css" href="{{asset('vendor/datatables/js/dataTables.checkboxes.css')}}" rel="stylesheet" />
         <script type="text/javascript" src="{{asset('vendor/datatables/js/dataTables.checkboxes.min.js')}}"></script>
         <script type="text/javascript">
-var timer_grp = {
-    interval: null,
-    seconds: 1800,
-    start: function () {
-        var self = this;
-        this.interval = setInterval(function () {
-            self.seconds--;
-
-            if (self.seconds == 0) {
-                //window.location.reload();
-                self.seconds = 1800;
-                $.ajax({
-                    method: "POST",
-                    url: "group.pull",
-                    beforeSend: function () {
-                        $('#spinner-div').show();
-                    },
-                    dataType: 'json',
-                    success: function (msg) {
-                        $('#spinner-div').hide();
-                        if (msg.status > 0) {
-                            tableAttendance.draw();
-                        } 
-                    }
-                });
-            }
-        }, 1000);
-    },
-
-    stop: function () {
-        window.clearInterval(this.interval);
-    }
-}
+var timer_grp = null;
+//var timer_grp = {
+//    interval: null,
+//    seconds: 1800,
+//    start: function () {
+//        var self = this;
+//        this.interval = setInterval(function () {
+//            self.seconds--;
+//
+//            if (self.seconds == 0) {
+//                //window.location.reload();
+//                self.seconds = 1800;
+//                $.ajax({
+//                    method: "POST",
+//                    url: "group.pull",
+//                    beforeSend: function () {
+//                        $('#spinner-div').show();
+//                    },
+//                    dataType: 'json',
+//                    success: function (msg) {
+//                        $('#spinner-div').hide();
+//                        if (msg.status > 0) {
+//                            tableAttendance.draw();
+//                        } 
+//                    }
+//                });
+//            }
+//        }, 1000);
+//    },
+//
+//    stop: function () {
+//        window.clearInterval(this.interval);
+//    }
+//}
 function myFunction() {
     location.reload();
 }
@@ -306,7 +307,7 @@ $(document).ready(function ()
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    timer_grp.start();
+//    timer_grp.start();
 });
 
 function printDiv(divID) {
