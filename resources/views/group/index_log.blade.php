@@ -183,7 +183,7 @@
                                     <div class="actions">
                                         <div class="btn-group btn-group-devided" >
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download" ></i> Excel</button>
-                                            <!--<button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Get Data</button>-->
+                                            <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Get Data</button>
                                         </div>
                                     </div>
                                 </div>
@@ -400,24 +400,24 @@ function printDiv(divID) {
                     } else if (tipe == 2) {
                         tableAttendance.button('.buttons-excel').trigger();
                     } else if (tipe == 99) {
-//                        $.ajax({
-//                            method: "POST",
-//                            url: "group.pull",
-//                            beforeSend: function () {
-//                                $('#spinner-div').show();
-//                            },
-//                            dataType: 'json',
-//                            success: function (msg) {
-//                                $('#spinner-div').hide();
-//                                if (msg.status > 0) {
-//                                    alert("Get data completed.");
-//                                    tableAttendance.draw();
-//                                } else {
-//                                    var txt = 'Fail get data.' + msg.message
-//                                    alert(txt)
-//                                }
-//                            }
-//                        })
+                        $.ajax({
+                            method: "POST",
+                            url: "group.pull",
+                            beforeSend: function () {
+                                $('#spinner-div').show();
+                            },
+                            dataType: 'json',
+                            success: function (msg) {
+                                $('#spinner-div').hide();
+                                if (msg.status > 0) {
+                                    alert("Get data completed.");
+                                    tableAttendance.draw();
+                                } else {
+                                    var txt = 'Fail get data.' + msg.message
+                                    alert(txt);
+                                }
+                            }
+                        });
                     }
                 });
                 $("div.dataTables_filter input").unbind();
