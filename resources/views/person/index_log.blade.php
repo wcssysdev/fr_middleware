@@ -183,7 +183,7 @@
                                     <div class="actions">
                                         <div class="btn-group btn-group-devided" >
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download" ></i> Excel</button>
-                                            <!--<button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Get Data</button>-->
+                                            <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Get Data</button>
                                         </div>
                                     </div>
                                 </div>

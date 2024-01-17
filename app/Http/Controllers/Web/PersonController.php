@@ -30,6 +30,7 @@ class PersonController extends BaseController {
 
     public function re_pull(Request $request) {
         try {
+            /*
             $startdate1 = new \DateTime();
             $startdate1->modify('-60 minutes');
             $enddate = $startdate1->format("Y-m-d H:i:s");
@@ -41,6 +42,7 @@ class PersonController extends BaseController {
                 echo json_encode([$data]);
                 exit();
             }
+            */
             $data_person = $this->get_data_person_from_dss($request);
             if (($data_person['status']) > 0) {
                 $return = $this->do_save_person($data_person['data']);
