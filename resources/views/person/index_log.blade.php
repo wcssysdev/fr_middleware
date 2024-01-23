@@ -404,22 +404,22 @@ function printDiv(divID) {
                     } else if (tipe == 2) {
                         tableAttendance.button('.buttons-excel').trigger();
                     } else if (tipe == 99) {
-//                        $.ajax({
-//                            method: "POST",
-//                            url: "person.pull",
-//                            beforeSend: function () {
-//                                $('#spinner-div').show();
-//                            },
-//                            success: function (msg) {
-//                                $('#spinner-div').hide();
-//                                if (msg.status == 'success') {
-//                                    alert("Get data completed.");
-//                                } else {
-//                                    var txt = 'Get data Completed.' + msg.message
-//                                    alert(txt)
-//                                }
-//                            }
-//                        })
+                        $.ajax({
+                            method: "POST",
+                            url: "person.pull",
+                            beforeSend: function () {
+                                $('#spinner-div').show();
+                            },
+                            success: function (msg) {
+                                $('#spinner-div').hide();
+                                if (msg.status == 'success') {
+                                    alert("Get data completed.");
+                                } else {
+                                    var txt = 'Get data Completed.' + msg.message
+                                    alert(txt)
+                                }
+                            }
+                        });
                     }
                 });
                 $("div.dataTables_filter input").unbind();
