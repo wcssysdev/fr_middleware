@@ -1391,6 +1391,7 @@ class FaceController extends BaseController {
                                 $query->where('alarmtime', '<=', $enddate);
                             })
                             ->select('fa_accesscontrol.*', 'fa_person.orgcode', 'fa_person.orgname')
+                            ->orderBy('alarmtime', 'asc')        
                             ->get();
                 } else {
                     $w_personid = "((fa_accesscontrol.personid ilike '%" . $search_val_all . "%')";
@@ -1416,32 +1417,35 @@ class FaceController extends BaseController {
                                 }
                             })
                             ->select('fa_accesscontrol.*', 'fa_person.orgcode', 'fa_person.orgname')
+                            ->orderBy('alarmtime', 'asc')        
                             ->get();
                 }
             } else {
-//                dd([$strdate,$enddate]);
+//                dd([$strdate,$enddate, $group]);
                 $data = DB::table('fa_accesscontrol')
-                        ->leftJoin('fa_person', 'fa_person.firstname', '=', 'fa_accesscontrol.firstname')
-                        ->where(function ($query) use ($strdate, $enddate) {
-                            $query->where('alarmtime', '>=', $strdate);
-                            $query->where('alarmtime', '<=', $enddate);
-                        })
-                        ->where(function ($query2) use ($group) {
-                            if (empty($group) || $group == 'ALL') {
-                                
-                            } else {
-                                $query2->orWhere('fa_person.orgcode', '=', $group);
-                            }
-                        })
-                        ->select('fa_accesscontrol.*', 'fa_person.orgcode', 'fa_person.orgname')
+                                ->select('alarmtime', 'fa_accesscontrol.accesstype', 'fa_accesscontrol.personid', 'fa_accesscontrol.firstname', 'fa_person.orgcode', 'fa_person.orgname')
+                                ->join('fa_person', 'fa_person.firstname', '=', 'fa_accesscontrol.firstname')
+                                ->where(function ($query) use ($strdate, $enddate) {
+                                    $query->where('alarmtime', '>=', $strdate);
+                                    $query->where('alarmtime', '<=', $enddate);
+                                })
+                                ->where(function ($query2) use ($group) {
+                                    if (empty($group) || $group == 'ALL') {
+                                        
+                                    } else {
+                                        $query2->orWhere('fa_person.orgcode', '=', $group);
+                                    }
+                                })->orderBy('alarmtime', 'asc')->get();
+//                        ->get();
 //                    ->orWhere('personid','ilike',"%".$search_val_all."%")
 //                    ->whereRaw($w_personid)
-                        ->get();
             }
 //            $data->dd();
 //            dd([$strdate, $enddate, $w_personid]);
-
-            $arr_data = $data->toArray();
+//            $arr_data = $data->toArray();
+            $arr_data = $data;
+//            array_filter($arr_data);
+//            dd($arr_data);
 //            echo json_encode($arr_data);die();
             if (!$arr_data || count($arr_data) < 1) {
                 return Datatables::of($data)
