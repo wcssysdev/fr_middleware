@@ -103,6 +103,7 @@ class PersonController extends BaseController {
 
     protected function get_data_person_from_dss($request, $ip_server = null) {
 //dd([$timestamp_start,$timestamp_end]);
+        date_default_timezone_set('Asia/Kuala_Lumpur');
         $server = config('face.API_FACEAPI_DOMAIN');
 
         if (empty($ip_server)) {
