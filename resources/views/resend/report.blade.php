@@ -1,7 +1,8 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>FR Monthly Report</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <title>FR Manual Resend SAP</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta name="robots" content="noindex,nofollow">
@@ -138,7 +139,7 @@
                 <div class="page-content">
                     <div class="page-head">
                         <div class="page-title">
-                            <h1>Report Monthly</h1>
+                            <h1>FR Manual Resend SAP</h1>
                         </div>
                     </div>
                     <ul class="page-breadcrumb breadcrumb">
@@ -157,18 +158,24 @@
 
                     <div class="row">
                         <div class="col-md-12">
+                                @if ($message = Session::get('success'))
+                                <div class="alert alert-success">
+                                    <p>{{ $message }}</p>
+                                </div>
+                                @endif                            
                         </div>
                         <div class="col-md-12">
                             <div class="portlet light form-fit bordered">
                                 <div class="portlet-body form">
                                     <form class="form-horizontal form-bordered" action="transactions/oph" method="GET">
+                                        <input type="hidden" name="csrf-token" content="{{ csrf_token() }}">
                                         <div class="form-group">
                                             <label class="col-md-1 control-label" style="text-align:left;">Work Date</label>
                                             <div class="col-md-4">
                                                 <div class="input-group date-picker input-daterange" data-date-format="yyyy-mm-dd" data-date-end-date="0d">
-                                                    <input class="form-control" name="from" placeholder="From" type="text" id="startdate" value="{{date('Y-m-d')}}" autocomplete="off">
+                                                    <input class="form-control" name="from" placeholder="From" type="text" id="startdate" value="2024-12-01" autocomplete="off">
                                                     <span class="input-group-addon"> to </span>
-                                                    <input class="form-control" name="to" placeholder="To" type="text" id="enddate" value="{{date('Y-m-d')}}" autocomplete="off"> 
+                                                    <input class="form-control" name="to" placeholder="To" type="text" id="enddate" value="2024-12-03" autocomplete="off"> 
                                                 </div>
                                             </div>
                                             <label class="col-md-1 control-label" style="text-align:left;">Group</label>
@@ -204,10 +211,11 @@
                             <div class="portlet light bordered">
                                 <div class="portlet-title">
                                     <div class="caption">
-                                        <span class="caption-subject font-blue sbold uppercase blue">Report Monthly</span>
+                                        <span class="caption-subject font-blue sbold blue">FR Manual Resend SAP</span>
                                     </div>
                                     <div class="actions">
                                         <div class="btn-group btn-group-devided" >
+                                            <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="9" id="export_transaction_btn"><i class="fa fa-download" ></i> Resend</button>
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download" ></i> Excel</button>
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="3" id="export_transaction_btn"><i class="fa fa-download" ></i> PDF</button>
                                         </div>
@@ -215,9 +223,12 @@
                                 </div>
                                 <div class="portlet-body">
                                     <div class="table">
+                                <form action="{{ route('webtransfersap') }}" method="POST" id="formResend">
+                                    @csrf
+                                    <input type="hidden" name="date" value="">
                                         <table class="table table-bordered" style="font-size:8px;" id="att_table">
                                             <thead>
-                                                <tr role="row">                                                           
+                                                <tr role="row">
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label=" "> No. </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="60px" aria-label=" ID"> Group </th>
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Code </th>
@@ -227,6 +238,7 @@
                                             <tbody>
                                             </tbody>
                                         </table>
+                                </form>
                                     </div>
                                 </div>
                             </div>
@@ -357,18 +369,31 @@ function printDiv(divID) {
             var searching;
             var columntbl;
             var columnWidth;
+            var columnDeff;
             const columnInit = [
                 {data: 'no_urut', name: 'no_urut'},
                 {data: 'orgname', name: 'orgname'},
                 {data: 'worker_id', name: 'worker_id'},
                 {data: 'nama_personnel', name: 'nama_personnel'}
             ];
+            const columnDefs1= [
+                 {
+                     targets: 0,
+                     checkboxes: {
+                         selectRow: true
+                     },
+                     orderable: false,
+                 },
+                 { orderable: false, targets: 0 },
+                 { orderable: false, targets: -1 },
+                 { orderable: false, targets: -2 },
+             ];            
             const clmWdth = ['3%', '1.75%', '3%', '5%'];
 
             $(document).ready(function () {
                 columntbl = columnInit;
                 columnWidth = clmWdth;
-                createTable();
+                //createTable();
                 $(document).on('click', '.doSearch', function () {
                     if (typeof tableAttendance !== 'undefined') {
                         tableAttendance.clear().destroy();
@@ -398,15 +423,18 @@ function printDiv(divID) {
                     for (var k in clmWdth) {
                         columnWidth.push(clmWdth[k]);
                     }
+                    columnDeff = columnDefs1;
                     for (var j in workingDays) {
 //                        console.info('workingDays' + j, workingDays[j]);
                         columntbl.push({data: workingDays[j], searchable: false, orderable: false});
                         columnWidth.push('3%');
+                        columnDeff.push({ orderable: false, targets: 0 });
                     }
 //                    console.info('columntbl', columntbl,'columnWidth',columnWidth);
                     createTable();
                     tableAttendance.draw();
                 });
+                $('.doSearch').click();
                 $(document).on('click', '#export_transaction_btn', function (i) {
                     var tipe = i.target.dataset.type;
                     if (tipe == 1) {
@@ -418,19 +446,16 @@ function printDiv(divID) {
                                 enddate = $('#enddate').val(),
                                 group = $('#group').val(),
                                 search = $('input[name="searching"]').val();
-                        let url = "{{ url('report/export_monthly') }}";
-                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate+ "&searchbox=" + search + "";
+                        let url = "{{ url('resend/export_monthly') }}";
+                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "&searchbox=" + search + "";
                         window.open(urlstr);
                     } else if (tipe == 3) {
-//                        let startdate = $('#startdate').val(),
-//                                enddate = $('#enddate').val(),
-//                                group = $('#group').val();
-//                        let url = "{{ url('report/print') }}";
-//                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "";
-//                        window.open(urlstr);
                         tableAttendance.button('.buttons-pdf').trigger();
                     } else if (tipe == 4) {
                         tableAttendance.button('.buttons-print').trigger();
+                    } else if (tipe == 9) {
+       
+         $('#formResend').submit();
                     }
                 });
 //                $("div.dataTables_filter input").unbind();
@@ -498,7 +523,7 @@ function printDiv(divID) {
                             scrollX: true,
                             scrollCollapse: true,
                     ajax: {
-                        url: "{{ url('report/data_monthly') }}",
+                        url: "{{ url('resend/data_monthly') }}",
                         data: function (d) {
 //                            d.columns = [];
                             d.startdate = $('#startdate').val(),
@@ -562,6 +587,37 @@ function printDiv(divID) {
                         },
                     ],
                     columns: columntbl,
+                    columnDefs : columnDeff,
+                    createdRow: function (row, data, dataIndex) {
+                        let tr = $('tr', row);
+                        $('td', row).each(function(i,td){
+                            if(i > 3){
+//                        let td_jam = $('td', row).eq(4).html();
+                                let td_jam = $(td).html();
+                                if (td_jam !== '') {
+                                   // console.info('row', td_jam);
+                                    let split_jam = td_jam.split(',');
+                                    let new_div = "";
+                                    if (split_jam.length > 0) {
+                                        for (var i in split_jam) {
+                                           // console.info('split' + i, split_jam[i]);
+                                            new_div += '<span style="width:150px;display: table;">' + split_jam[i] + '</span><br/>';
+//                                            new_div += split_jam[i];
+                                        }
+                                    }else{
+//                                        new_div +=  split_jam[0];
+                                        new_div += '<span style="width:150px;display: table;">' + split_jam[0] + '</span><br/>';
+                                    }
+                                    
+                                    $(td).html(new_div);
+                                }
+                            }
+                        });
+                    },
+        select: {
+            style: 'multi',
+            selector: 'tr:not(.no-select)'
+        },                            
                     lengthMenu: [
                         [10, 25, 50, 100, -1],
                         [10, 25, 50, 100, 'All'],
@@ -569,8 +625,37 @@ function printDiv(divID) {
                     order: [[0, 'asc']]
                 });
             }
+            $('#formResend').on('submit', function(e){
+                   var $form = $(this);
+                    $(this).find('input[type="checkbox"]').each(function(i,v){
+                           if(v.checked){
+                               let td  = $(v).parents('tr').find('td').eq(3);
+                               let v_td = $(td).html();
+                               if(typeof v_td !== 'undefined' && (v_td.length > 0)){
+                                    $form.append(
+                                        $('<input>')
+                                            .attr('type', 'hidden')
+                                            .attr('name', 'emp[]')
+                                            .val($(td).html())
+                                    );
+                                }
+                           }
+                            $form.append(
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', 'sdate')
+                                    .val($('#startdate').val())
+                            );                           
+                            $form.append(
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', 'edate')
+                                    .val($('#enddate').val())
+                            );                           
+                   });           
+               });  
         </script>
-        <script src="{{asset('assets/js/report/table.js')}}" type='text/javascript'></script>
+        <script src="{{asset('assets/js/resend/table.js')}}" type='text/javascript'></script>
         <style>
             .dt-buttons {
                 display: none;

@@ -36,6 +36,17 @@ Route::namespace("Web")
             Route::get('/datalog', [\App\Http\Controllers\Web\LogController::class, 'getData'])->name('datalog');
             Route::get('/data_beautifullify_log', [\App\Http\Controllers\Web\LogController::class, 'getDataFormatted'])->name('data_pretty_log');
         });
+Route::namespace("Web")
+        ->name("web")
+        ->prefix('resend')
+        ->group(function () {
+            Route::get('/data_daily', [\App\Http\Controllers\Web\ManualSendController::class, 'getDataDaily'])->name('data_daily');
+            Route::post('/transfersap', [\App\Http\Controllers\Web\ManualSendController::class, 'transfersap'])->name('transfersap');
+            Route::get('/data_monthly', [\App\Http\Controllers\Web\ManualSendController::class, 'getDataMonthly'])->name('data_send');
+            Route::get('/data', [\App\Http\Controllers\Web\ManualSendController::class, 'getData'])->name('resenddata');
+            Route::get('/', [\App\Http\Controllers\Web\ManualSendController::class, 'index'])->name('resend');
+            Route::get('/export_monthly', [\App\Http\Controllers\Web\ManualSendController::class, 'export_monthly'])->name('send_excel_monthly');
+        });
 //Route::namespace("Web")
 //        ->name("web")
 //        ->prefix('report')

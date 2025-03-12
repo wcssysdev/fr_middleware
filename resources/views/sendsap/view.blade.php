@@ -8,7 +8,7 @@
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta name="robots" content="noindex,nofollow">
         <meta content="" name="author" />
-        <base href="http://localhost:8080/faceapp/">
+        <base href="http://localhost:444/faceapp/">
         <link rel="shortcut icon" href="{{asset('assets/img/ioi_icon.png')}}" />
 
         <link href="{{asset('vendor/font-awesome-old/css/font-awesome.min.css')}}" rel="stylesheet" type="text/css" />
@@ -134,7 +134,7 @@
                                         <span class="arrow "></span>
                                     </a>                                    
                                 </li>
-                                <li class="nav-item active">
+                                <li class="nav-item">
                                     <a href="{{ route('webmonthly') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Report Monthly</span>
@@ -153,11 +153,19 @@
                                 <li class="nav-item active">
                                     <a href="{{ route('sendsapindex') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Send Data</span>
+                                        <span class="title">Get Data</span>
                                         <span class="selected"></span>
                                         <span class="arrow "></span>
                                     </a>                                    
-                                </li>                                
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('webresend') }}" class="nav-link">
+                                        <i class="fa fa-chart-bar"></i>
+                                        <span class="title">Manual Send</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow "></span>
+                                    </a>                                    
+                                </li>                               
                             </ul>
                         </li>
                     </ul>
@@ -257,7 +265,7 @@
 
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.1.0 (20231212)</a>
+                <a> FaceApi IOI V 3.4.0.0 ((20250313))</a>
             </div>
             <div class="scroll-to-top">
                 <i class="icon-arrow-up"></i>

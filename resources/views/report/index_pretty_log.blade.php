@@ -149,11 +149,19 @@
                                 <li class="nav-item">
                                     <a href="{{ route('sendsapindex') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Send Data</span>
+                                        <span class="title">Get Data</span>
                                         <span class="selected"></span>
                                         <span class="arrow "></span>
                                     </a>                                    
-                                </li>                                
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('webresend') }}" class="nav-link">
+                                        <i class="fa fa-chart-bar"></i>
+                                        <span class="title">Manual Send</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow "></span>
+                                    </a>                                    
+                                </li>                              
                             </ul>
                         </li>
                     </ul>
@@ -223,7 +231,7 @@
                                     <div class="actions">
                                         <div class="btn-group btn-group-devided" >
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download" ></i> Excel</button>
-                                            <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Resend Failed Data</button>
+                                            <!--<button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Resend Failed Data</button>-->
                                         </div>
                                     </div>
                                 </div>
@@ -256,7 +264,7 @@
         </div>
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.1.0 (20231212)</a>
+                <a> FaceApi IOI V 3.4.0.0 ((20250313))</a>
             </div>
             <div class="scroll-to-top">
                 <i class="icon-arrow-up"></i>
