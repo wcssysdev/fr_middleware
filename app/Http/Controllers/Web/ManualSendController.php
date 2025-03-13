@@ -73,7 +73,7 @@ class ManualSendController extends BaseController {
             $strdate = "$startdate_ori 00:00:01";
             $enddate = "$enddate_ori 23:59:59";
 
-            $sdate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -8 hour'));
+            $sdate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -7 hour'));
             $edate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -3 second'));
 
             //Edate = date + 1 day 
@@ -95,7 +95,7 @@ class ManualSendController extends BaseController {
                             $query->orWhere(function ($query3) use ($sdate_before, $edate_before) {
                                 $query3->where('alarmtime', '>=', $sdate_before);
                                 $query3->where('alarmtime', '<=', $edate_before);
-                                $query3->where('fa_accesscontrol.accesstype', '=', 'IN');
+//                                $query3->where('fa_accesscontrol.accesstype', '=', 'IN');
                             });
                             $query->orWhere(function ($query5) use ($edate_before, $sdate_after) {
                                 $query5->where('alarmtime', '>=', $edate_before);
@@ -104,7 +104,7 @@ class ManualSendController extends BaseController {
                             $query->orWhere(function ($query4) use ($sdate_after, $edate_after) {
                                 $query4->where('alarmtime', '>=', $sdate_after);
                                 $query4->where('alarmtime', '<=', $edate_after);
-                                $query4->where('fa_accesscontrol.accesstype', '=', 'OUT');
+//                                $query4->where('fa_accesscontrol.accesstype', '=', 'OUT');
                             });
                         })
                         ->where(function ($query1) use ($searchwhere) {
@@ -130,7 +130,7 @@ class ManualSendController extends BaseController {
                                     $query->orWhere(function ($query3) use ($sdate_before, $edate_before) {
                                         $query3->where('alarmtime', '>=', $sdate_before);
                                         $query3->where('alarmtime', '<=', $edate_before);
-                                        $query3->where('fa_accesscontrol.accesstype', '=', 'IN');
+//                                        $query3->where('fa_accesscontrol.accesstype', '=', 'IN');
                                     });
                                     $query->orWhere(function ($query5) use ($edate_before, $sdate_after) {
                                         $query5->where('alarmtime', '>=', $edate_before);
@@ -139,7 +139,7 @@ class ManualSendController extends BaseController {
                                     $query->orWhere(function ($query4) use ($sdate_after, $edate_after) {
                                         $query4->where('alarmtime', '>=', $sdate_after);
                                         $query4->where('alarmtime', '<=', $edate_after);
-                                        $query4->where('fa_accesscontrol.accesstype', '=', 'OUT');
+//                                        $query4->where('fa_accesscontrol.accesstype', '=', 'OUT');
                                     });
                                 })
                                 ->where(function ($query2) use ($group) {
@@ -161,6 +161,7 @@ class ManualSendController extends BaseController {
 
 
             $list_workdays = $this->list_of_working_days($startdate_ori, $enddate_ori);
+//            dd($list_workdays);
 
             $swipetime = [];
             $new_data = [];
@@ -354,7 +355,7 @@ class ManualSendController extends BaseController {
         $strdate = "$startdate_ori 00:00:01";
         $enddate = "$enddate_ori 23:59:59";
 
-        $sdate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -8 hour'));
+        $sdate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -7 hour'));
         $edate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -3 second'));
 
         //Edate = date + 1 day 
@@ -381,7 +382,7 @@ class ManualSendController extends BaseController {
                             $query->orWhere(function ($query4) use ($sdate_after, $edate_after) {
                                 $query4->where('alarmtime', '>=', $sdate_after);
                                 $query4->where('alarmtime', '<=', $edate_after);
-                                $query4->where('fa_accesscontrol.accesstype', '=', 'OUT');
+//                                $query4->where('fa_accesscontrol.accesstype', '=', 'OUT');
                             });
                         })
                         ->orderBy('alarmtime', 'asc')->get();
@@ -503,34 +504,34 @@ class ManualSendController extends BaseController {
 
         $list_workdays = $this->list_of_working_days($startdate_ori, $enddate_ori);
         $workdays_keys = array_keys($list_workdays);
-            foreach ($swipetime as $personid => $direct) {
+        foreach ($swipetime as $personid => $direct) {
 //                print_r($direct);echo "\n";
-                $all_tgl = [];
-                foreach ($direct as $tgl => $rows) {
-                    $j = 0;
-                    $rowData = [];
-                    foreach ($rows as $dt) {
+            $all_tgl = [];
+            foreach ($direct as $tgl => $rows) {
+                $j = 0;
+                $rowData = [];
+                foreach ($rows as $dt) {
 //                        print_r($dt);echo "\n";
-                        $type = substr($dt, -1);
-                        $v_dir = substr($dt, 0, -1);
-                        if ($type == 'I') {
-                            $rowData[$j] = $v_dir;
-                            $j++;
-                        } elseif ($type == 'O') {
-                            $rowData[($j - 1)] = $rowData[($j - 1)] . ' : ' . $v_dir;
-                        }
+                    $type = substr($dt, -1);
+                    $v_dir = substr($dt, 0, -1);
+                    if ($type == 'I') {
+                        $rowData[$j] = $v_dir;
+                        $j++;
+                    } elseif ($type == 'O' && $j > 0) {
+                        $rowData[($j - 1)] = $rowData[($j - 1)] . ' : ' . $v_dir;
                     }
-                    if ($rowData) {
-                        $all_tgl[$tgl] = $rowData;
-                    }
+                }
+                if ($rowData) {
+                    $all_tgl[$tgl] = $rowData;
+                }
 //                    echo json_encode($rows);
 //                    echo "\n";
-                }
-                $swipetime[$personid] = ($all_tgl) + $list_workdays;
-                $newdata = (array) ($new_data[$personid]);
-                $new_data[$personid] = (object) array_merge($newdata, $swipetime[$personid]);
             }
-            
+            $swipetime[$personid] = ($all_tgl) + $list_workdays;
+            $newdata = (array) ($new_data[$personid]);
+            $new_data[$personid] = (object) array_merge($newdata, $swipetime[$personid]);
+        }
+
 //            dd($new_data);
         /**
          * ingat format laporan ada TIME IN - TIME OUT
@@ -575,20 +576,20 @@ class ManualSendController extends BaseController {
 
             $counter_ori = $counter;
             foreach ($header_date as $date_column) {
-                    if (empty($row[$date_column])) {
-                        $valval = "N/A";
-                        $sheet->setCellValue($start_char . ($counter_ori), $valval);
-                    } else {
-                        $countertrx = $counter_ori;
-                        foreach ($row[$date_column] as $att) {
+                if (empty($row[$date_column])) {
+                    $valval = "N/A";
+                    $sheet->setCellValue($start_char . ($counter_ori), $valval);
+                } else {
+                    $countertrx = $counter_ori;
+                    foreach ($row[$date_column] as $att) {
 //                        $valval = implode(",", $row[$date_column]);
-                            $sheet->setCellValue($start_char . ($countertrx), $att);
-                            $countertrx++;
-                        }
-                        if($countertrx > $counter){
-                            $counter = $countertrx - 1;
-                        }
+                        $sheet->setCellValue($start_char . ($countertrx), $att);
+                        $countertrx++;
                     }
+                    if ($countertrx > $counter) {
+                        $counter = $countertrx - 1;
+                    }
+                }
                 $start_char++;
             }
             $columnA = "A$counter_ori:A$counter";
@@ -599,7 +600,6 @@ class ManualSendController extends BaseController {
             $sheet->mergeCells($columnB);
             $sheet->mergeCells($columnC);
             $sheet->mergeCells($columnD);
-
 
             $counter++;
             $id++;
@@ -640,7 +640,7 @@ class ManualSendController extends BaseController {
         }
         $enddate = "$enddate_ori 23:59:59";
 
-        $sdate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -8 hour'));
+        $sdate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -7 hour'));
         $edate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -3 second'));
 
         //Edate = date + 1 day 
@@ -656,7 +656,7 @@ class ManualSendController extends BaseController {
                             $query->orWhere(function ($query3) use ($sdate_before, $edate_before) {
                                 $query3->where('alarmtime', '>=', $sdate_before);
                                 $query3->where('alarmtime', '<=', $edate_before);
-                                $query3->where('fa_accesscontrol.accesstype', '=', 'IN');
+//                                $query3->where('fa_accesscontrol.accesstype', '=', 'IN');
                             });
                             $query->orWhere(function ($query5) use ($edate_before, $sdate_after) {
                                 $query5->where('alarmtime', '>=', $edate_before);
@@ -665,7 +665,7 @@ class ManualSendController extends BaseController {
                             $query->orWhere(function ($query4) use ($sdate_after, $edate_after) {
                                 $query4->where('alarmtime', '>=', $sdate_after);
                                 $query4->where('alarmtime', '<=', $edate_after);
-                                $query4->where('fa_accesscontrol.accesstype', '=', 'OUT');
+//                                $query4->where('fa_accesscontrol.accesstype', '=', 'OUT');
                             });
                         })->whereIn('fa_accesscontrol.personid', $emps)
                         ->orderBy('alarmtime', 'asc')->get();

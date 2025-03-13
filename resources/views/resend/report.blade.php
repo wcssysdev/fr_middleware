@@ -191,6 +191,17 @@
                                             </div> 
                                         </div>
                                         <div class="form-group">
+                                            <label class="col-md-3 control-label" style="text-align:left;">System Will get data between:</label>
+                                     
+                                            <div class="col-md-4">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"> [Startdate] '07:00:00'</span>
+                                                    <span class="input-group-addon"> Until</span>
+                                                    <span class="input-group-addon"> [End date + 1 day] '09:00:00'</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             <label class="col-md-1 control-label" style="text-align:left;">Search</label>
                                             <div class="col-md-4">
                                                 <div class="input-group">
