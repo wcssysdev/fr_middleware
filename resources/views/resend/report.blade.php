@@ -173,9 +173,9 @@
                                             <label class="col-md-1 control-label" style="text-align:left;">Work Date</label>
                                             <div class="col-md-4">
                                                 <div class="input-group date-picker input-daterange" data-date-format="yyyy-mm-dd" data-date-end-date="0d">
-                                                    <input class="form-control" name="from" placeholder="From" type="text" id="startdate" value="2024-12-01" autocomplete="off">
+                                                    <input class="form-control" name="from" placeholder="From" type="text" id="startdate" value="{{date('Y-m-d')}}" autocomplete="off">
                                                     <span class="input-group-addon"> to </span>
-                                                    <input class="form-control" name="to" placeholder="To" type="text" id="enddate" value="2024-12-03" autocomplete="off"> 
+                                                    <input class="form-control" name="to" placeholder="To" type="text" id="enddate" value="{{date('Y-m-d')}}" autocomplete="off"> 
                                                 </div>
                                             </div>
                                             <label class="col-md-1 control-label" style="text-align:left;">Group</label>
