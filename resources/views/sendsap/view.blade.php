@@ -8,7 +8,7 @@
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta name="robots" content="noindex,nofollow">
         <meta content="" name="author" />
-        <base href="http://localhost:444/faceapp/">
+        <base href="http://localhost/faceapp/">
         <link rel="shortcut icon" href="{{asset('assets/img/ioi_icon.png')}}" />
 
         <link href="{{asset('vendor/font-awesome-old/css/font-awesome.min.css')}}" rel="stylesheet" type="text/css" />
@@ -66,6 +66,9 @@
             }
             .pt-5 {
                 padding-top: 3rem !important;
+            }
+            .datepicker {
+                z-index: 10000;
             }
         </style>        
     </head>
@@ -332,10 +335,10 @@ $(document).ready(function ()
     $('#get_dss').click(function () {
         if (this.value !== 'undefined') {
             $.ajax({
-                method: "POST",
+                type: "POST",
                 url: "sendsap.transfer",
                 data: {type: 'pull', date_start: $('#startdate').val(), date_end: $('#enddate').val()},
-                dataType: 'json',
+                dataType: 'text/json',
                 beforeSend: function () {
                     $('#spinner-div').show();
                 },
@@ -354,10 +357,10 @@ $(document).ready(function ()
     $('#send_sap').click(function () {
         if (this.value !== 'undefined') {
             $.ajax({
-                method: "POST",
+                type: "POST",
                 url: "sendsap.transfer",
                 data: {type: 'push', date_start: $('#startdate').val(), date_end: $('#enddate').val()},
-                dataType: 'json',
+                dataType: 'text/json',
                 beforeSend: function () {
                     $('#spinner-div').show();
                 },
@@ -366,8 +369,11 @@ $(document).ready(function ()
                     if (msg.status == 'success') {
                         alert("Transfer completed. System success send data to SAP.");
                     } else {
-                        var txt = 'Transfer Completed.' + msg.message
-                        alert(txt)
+                        var txt = 'Transfer Completed.';
+                        if (msg.message != null) {
+                            txt += msg.message;
+                        }
+                        alert(txt);
                     }
                 }
             })

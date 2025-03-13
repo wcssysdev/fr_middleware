@@ -372,7 +372,7 @@ class ManualSendController extends BaseController {
                             $query->orWhere(function ($query3) use ($sdate_before, $edate_before) {
                                 $query3->where('alarmtime', '>=', $sdate_before);
                                 $query3->where('alarmtime', '<=', $edate_before);
-                                $query3->where('fa_accesscontrol.accesstype', '=', 'IN');
+//                                $query3->where('fa_accesscontrol.accesstype', '=', 'IN');
                             });
                             $query->orWhere(function ($query5) use ($edate_before, $sdate_after) {
                                 $query5->where('alarmtime', '>=', $edate_before);
