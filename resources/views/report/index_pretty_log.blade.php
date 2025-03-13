@@ -131,6 +131,14 @@
                                     </a>                                    
                                 </li>
                                 <li class="nav-item active">
+                                    <a href="{{ route('webmonthly') }}" class="nav-link">
+                                        <i class="fa fa-chart-bar"></i>
+                                        <span class="title">Report Monthly</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow "></span>
+                                    </a>                                    
+                                </li>                                 
+                                <li class="nav-item active">
                                     <a href="{{ route('weblog') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Log</span>
@@ -141,11 +149,19 @@
                                 <li class="nav-item">
                                     <a href="{{ route('sendsapindex') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Send Data</span>
+                                        <span class="title">Get Data</span>
                                         <span class="selected"></span>
                                         <span class="arrow "></span>
                                     </a>                                    
-                                </li>                                
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('webresend') }}" class="nav-link">
+                                        <i class="fa fa-chart-bar"></i>
+                                        <span class="title">Manual Send</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow "></span>
+                                    </a>                                    
+                                </li>                              
                             </ul>
                         </li>
                     </ul>
@@ -197,7 +213,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
-                                                <button type="button" class="btn btn-circle btn-block btn-outline btn-md blue doSearch"> <i class="fa fa-search"></i> Filter
+                                                <button type="button" class="btn btn-circle btn-block btn-outline btn-md blue doSearchLog"> <i class="fa fa-search"></i> Filter
                                                 </button>
                                             </div>
                                         </div>
@@ -215,7 +231,7 @@
                                     <div class="actions">
                                         <div class="btn-group btn-group-devided" >
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download" ></i> Excel</button>
-                                            <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Resend Failed Data</button>
+                                            <!--<button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Resend Failed Data</button>-->
                                         </div>
                                     </div>
                                 </div>
@@ -248,7 +264,7 @@
         </div>
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.0.4 (20231003)</a>
+                <a> FaceApi IOI V 3.4.0.0 ((20250313))</a>
             </div>
             <div class="scroll-to-top">
                 <i class="icon-arrow-up"></i>
@@ -307,7 +323,7 @@ var timer_fr = {
             if (self.seconds == 0) {
                 //window.location.reload();
                 self.seconds = 50;
-                tableAttendance.draw();
+                tableLog.draw();
             }
         }, 1000);
     },
@@ -347,9 +363,60 @@ function printDiv(divID) {
 
         </script>
         <script language="javascript" type="text/javascript">
-            var tableAttendance;
+            var tableLog;
             $(document).ready(function () {
-                tableAttendance = $('#log_table').DataTable({
+                createTable();
+                $(document).on('click', '.doSearchLog', function (e) {
+                    var e_date = $('#enddate').val();
+                    if (e_date == '') {
+                        e.preventDefault();
+                        return false;
+                    }
+                    if (typeof tableLog !== 'undefined') {
+                        tableLog.clear().destroy();
+                    }                     
+                    createTable();
+                });
+                $(document).on('click', '#export_transaction_btn', function (i) {
+                    var tipe = i.target.dataset.type;
+                    if (tipe == 1) {
+                        tableLog.button('.buttons-csv').trigger();
+                    } else if (tipe == 2) {
+                        tableLog.button('.buttons-excel').trigger();
+                    } else if (tipe == 3) {
+                        tableLog.button('.buttons-print').trigger();
+                    } else if (tipe == 99) {
+                        $.ajax({
+                            method: "POST",
+                            url: "sendsap.transfer",
+                            data: {type: 'resend'},
+                            dataType: 'json',
+                            beforeSend: function () {
+                                $('#spinner-div').show();
+                            },
+                            success: function (msg) {
+                                $('#spinner-div').hide();
+                                if (msg.status == 'success') {
+                                    alert("Transfer completed.");
+                                } else {
+                                    var txt = 'Transfer Completed.' + msg.message
+                                    alert(txt);
+                                }
+                            }
+                        })
+                    }
+                });
+                $("div.dataTables_filter input").unbind();
+                $("div.dataTables_filter input").on('keydown', function (e) {
+                    if (e.which == 13) {
+                        tableLog.draw();
+                    }
+                });
+            });
+        </script>
+        <script language="javascript" type="text/javascript">
+            function createTable(){
+                tableLog = $('#log_table').DataTable({
 //                    processing: true,
                     autoFilter: false,
                     language: {
@@ -358,7 +425,7 @@ function printDiv(divID) {
                         processing: 'Please wait...'
 //            processing: '<div class="spinner"></div>'
                     },
-                    serverSide: true,
+                    serverSide: false,
                     autoWidth: true,
 //        scrollY:        "300px",
                             scrollX: false,
@@ -370,6 +437,7 @@ function printDiv(divID) {
                     ajax: {
                         url: "{{ url('log/data_beautifullify_log') }}",
                         data: function (d) {
+                            d.columns = [];
                             d.enddate = $('#enddate').val(),
                                     d.status = $('#status').val(),
                                     d.searchbox = $("div.dataTables_filter input").val()
@@ -429,52 +497,10 @@ function printDiv(divID) {
                         [10, 25, 50, 100, 'All'],
                     ],
                     order: [[0, 'asc']]
-                });
-                $(document).on('click', '.doSearch', function (e) {
-                    e.preventDefault();
-                    var e_date = $('#enddate').val();
-                    if (e_date == '') {
-                        return false;
-                    }
-                    tableAttendance.draw();
-                });
-                $(document).on('click', '#export_transaction_btn', function (i) {
-                    var tipe = i.target.dataset.type;
-                    if (tipe == 1) {
-                        tableAttendance.button('.buttons-csv').trigger();
-                    } else if (tipe == 2) {
-                        tableAttendance.button('.buttons-excel').trigger();
-                    } else if (tipe == 3) {
-                        tableAttendance.button('.buttons-print').trigger();
-                    } else if (tipe == 99) {
-                        $.ajax({
-                            method: "POST",
-                            url: "sendsap.transfer",
-                            data: {type: 'resend'},
-                            dataType: 'json',
-                            beforeSend: function () {
-                                $('#spinner-div').show();
-                            },
-                            success: function (msg) {
-                                $('#spinner-div').hide();
-                                if (msg.status == 'success') {
-                                    alert("Transfer completed.");
-                                } else {
-                                    var txt = 'Transfer Completed.' + msg.message
-                                    alert(txt)
-                                }
-                            }
-                        })
-                    }
-                });
-                $("div.dataTables_filter input").unbind();
-                $("div.dataTables_filter input").on('keydown', function (e) {
-                    if (e.which == 13) {
-                        tableAttendance.draw();
-                    }
-                });
-            });
-        </script>
+                });       
+            }
+            </script>
+            
         <script src="{{asset('assets/js/report/table_log.js')}}" type='text/javascript'></script>
         <style>
             .dt-buttons {

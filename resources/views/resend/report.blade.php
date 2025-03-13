@@ -1,7 +1,8 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>FR Time Attendance</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <title>FR Manual Resend SAP</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta name="robots" content="noindex,nofollow">
@@ -89,7 +90,7 @@
                                         <span class="arrow "></span>
                                     </a>
                                 </li>                                
-                                <li class="nav-item active">
+                                <li class="nav-item">
                                     <a href="{{ route('webreport') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Report</span>
@@ -97,7 +98,7 @@
                                         <span class="arrow "></span>
                                     </a>                                    
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item active">
                                     <a href="{{ route('webmonthly') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Report Monthly</span>
@@ -138,7 +139,7 @@
                 <div class="page-content">
                     <div class="page-head">
                         <div class="page-title">
-                            <h1>Report Time Attendance</h1>
+                            <h1>FR Manual Resend SAP</h1>
                         </div>
                     </div>
                     <ul class="page-breadcrumb breadcrumb">
@@ -157,11 +158,17 @@
 
                     <div class="row">
                         <div class="col-md-12">
+                                @if ($message = Session::get('success'))
+                                <div class="alert alert-success">
+                                    <p>{{ $message }}</p>
+                                </div>
+                                @endif                            
                         </div>
                         <div class="col-md-12">
                             <div class="portlet light form-fit bordered">
                                 <div class="portlet-body form">
                                     <form class="form-horizontal form-bordered" action="transactions/oph" method="GET">
+                                        <input type="hidden" name="csrf-token" content="{{ csrf_token() }}">
                                         <div class="form-group">
                                             <label class="col-md-1 control-label" style="text-align:left;">Work Date</label>
                                             <div class="col-md-4">
@@ -184,6 +191,17 @@
                                             </div> 
                                         </div>
                                         <div class="form-group">
+                                            <label class="col-md-3 control-label" style="text-align:left;">System Will get data between:</label>
+                                     
+                                            <div class="col-md-4">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"> [Startdate] '07:00:00'</span>
+                                                    <span class="input-group-addon"> Until</span>
+                                                    <span class="input-group-addon"> [End date + 1 day] '09:00:00'</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             <label class="col-md-1 control-label" style="text-align:left;">Search</label>
                                             <div class="col-md-4">
                                                 <div class="input-group">
@@ -204,10 +222,11 @@
                             <div class="portlet light bordered">
                                 <div class="portlet-title">
                                     <div class="caption">
-                                        <span class="caption-subject font-blue sbold uppercase blue">Time Attendance</span>
+                                        <span class="caption-subject font-blue sbold blue">FR Manual Resend SAP</span>
                                     </div>
                                     <div class="actions">
                                         <div class="btn-group btn-group-devided" >
+                                            <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="9" id="export_transaction_btn"><i class="fa fa-download" ></i> Resend</button>
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download" ></i> Excel</button>
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="3" id="export_transaction_btn"><i class="fa fa-download" ></i> PDF</button>
                                         </div>
@@ -215,44 +234,22 @@
                                 </div>
                                 <div class="portlet-body">
                                     <div class="table">
-                                        <table class="table table-bordered table-hover" style="font-size:8px;" id="att_table">
+                                <form action="{{ route('webtransfersap') }}" method="POST" id="formResend">
+                                    @csrf
+                                    <input type="hidden" name="date" value="">
+                                        <table class="table table-bordered" style="font-size:8px;" id="att_table">
                                             <thead>
-                                                <tr role="row">                                                           
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" "> No. </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" ID"> Group </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Cd </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 125px; text-align: left;" aria-label=" name"> Emp. Nm </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 122px; text-align: left;" aria-label=" work_date"> Work Date </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 122px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 122px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 122px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 122px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 122px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="2" style="width: 122px; text-align: center;" aria-label="Time"> Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 45px;" aria-label="First IN">First IN</th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 34px;" aria-label="Last OUT">Last OUT</th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Duration">Total Dur.</th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="Total Rest">Total Rest</th>
-                                                    <th class="all sorting not-export-col" tabindex="0" aria-controls="fr_table" rowspan="2" colspan="1" style="width: 49px;" aria-label="OT Hours">OT Hours</th>
-                                                </tr>
-                                                <tr role="row">                                                           
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="OUT"> OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="IN"> IN </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 60px;" aria-label="OUT"> OUT </th>
+                                                <tr role="row">
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label=" "> No. </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="60px" aria-label=" ID"> Group </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Code </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" name"> Emp. Name </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             </tbody>
                                         </table>
+                                </form>
                                     </div>
                                 </div>
                             </div>
@@ -270,7 +267,20 @@
             </div>
         </div>
         <div class="quick-nav-overlay"></div>
-
+        <div style ="display:none;">
+            <table class="table table-bordered table-hover" style="font-size:8px;" id="clone_table">
+                <thead>
+                    <tr role="row">                                                           
+                        <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label=" "> No. </th>
+                        <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="60px" aria-label=" ID"> Group </th>
+                        <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Code </th>
+                        <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label=" name"> Emp. Name </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>            
+        </div>
         <script src="{{asset('vendor/template_assets/global/plugins/jquery.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('vendor/template_assets/global/plugins/bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('vendor/template_assets/global/plugins/js.cookie.min.js')}}" type="text/javascript"></script>
@@ -329,7 +339,7 @@ var timer_fr = {
     }
 }
 function myFunction() {
-    location.reload();
+//    location.reload();
 }
 $(document).ready(function ()
 {
@@ -338,7 +348,7 @@ $(document).ready(function ()
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    timer_fr.start();
+//    timer_fr.start();
 })
 
 function printDiv(divID) {
@@ -347,12 +357,11 @@ function printDiv(divID) {
     //Get the HTML of whole page
     var oldPage = document.body.innerHTML;
     //Reset the page's HTML with div's HTML only
-    console.info('html', divElements);
     document.body.innerHTML =
             "<html><head><title></title></head><body>" +
             divElements + "</body>";
     //Print Page
-//    window.print();
+    window.print();
     //Restore orignal HTML
     document.body.innerHTML = oldPage;
 }
@@ -369,50 +378,150 @@ function printDiv(divID) {
         <script language="javascript" type="text/javascript">
             var tableAttendance;
             var searching;
+            var columntbl;
+            var columnWidth;
+            var columnDeff;
+            const columnInit = [
+                {data: 'no_urut', name: 'no_urut'},
+                {data: 'orgname', name: 'orgname'},
+                {data: 'worker_id', name: 'worker_id'},
+                {data: 'nama_personnel', name: 'nama_personnel'}
+            ];
+            const columnDefs1= [
+                 {
+                     targets: 0,
+                     checkboxes: {
+                         selectRow: true
+                     },
+                     orderable: false,
+                 },
+                 { orderable: false, targets: 0 },
+                 { orderable: false, targets: -1 },
+                 { orderable: false, targets: -2 },
+             ];            
+            const clmWdth = ['3%', '1.75%', '3%', '5%'];
+
             $(document).ready(function () {
-                createTable();
-                $(document).on('click', '.doSearch', function (e) {
+                columntbl = columnInit;
+                columnWidth = clmWdth;
+                //createTable();
+                $(document).on('click', '.doSearch', function () {
                     if (typeof tableAttendance !== 'undefined') {
                         tableAttendance.clear().destroy();
-                    }                    
+                    }
                     var e_date = $('#enddate').val();
-                    console.info('edate', e_date);
+//                    console.info('edate', e_date);
                     if (e_date == '') {
                         return false;
                     }
+                    let sdate = $('#startdate').val();
+                    let edate = $('#enddate').val();
+                    let js_sdate = new Date(sdate);
+                    let js_edate = new Date(edate);
+                    let workingDays = getWorkingDays(js_sdate, js_edate);
+
+                    let tbl_tr = $('#clone_table').find('thead').html();
+                    let tbl_tr_clone = $(tbl_tr).clone();
+                    let ths = createHeaderColumnOfDateFromArray(workingDays);
+                    $(tbl_tr_clone).append(ths);
+                    $('#att_table').find('thead').html(tbl_tr_clone);
+//                    console.info('columnInit', columnInit);
+                    columntbl = [];
+                    for (var k in columnInit) {
+                        columntbl.push(columnInit[k]);
+                    }
+                    columnWidth = [];
+                    for (var k in clmWdth) {
+                        columnWidth.push(clmWdth[k]);
+                    }
+                    columnDeff = columnDefs1;
+                    for (var j in workingDays) {
+//                        console.info('workingDays' + j, workingDays[j]);
+                        columntbl.push({data: workingDays[j], searchable: false, orderable: false});
+                        columnWidth.push('3%');
+                        columnDeff.push({ orderable: false, targets: 0 });
+                    }
+//                    console.info('columntbl', columntbl,'columnWidth',columnWidth);
                     createTable();
+                    tableAttendance.draw();
                 });
+                $('.doSearch').click();
                 $(document).on('click', '#export_transaction_btn', function (i) {
                     var tipe = i.target.dataset.type;
                     if (tipe == 1) {
                         tableAttendance.button('.buttons-csv').trigger();
                     } else if (tipe == 2) {
 //                        tableAttendance.button('.buttons-excel').trigger();
+//                        tableAttendance.button('.buttons-excel').trigger();
                         let startdate = $('#startdate').val(),
                                 enddate = $('#enddate').val(),
                                 group = $('#group').val(),
                                 search = $('input[name="searching"]').val();
-                        let url = "{{ url('report/print') }}";
-                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate+ "&searchbox=" + search + "";
+                        let url = "{{ url('resend/export_monthly') }}";
+                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "&searchbox=" + search + "";
                         window.open(urlstr);
                     } else if (tipe == 3) {
                         tableAttendance.button('.buttons-pdf').trigger();
                     } else if (tipe == 4) {
                         tableAttendance.button('.buttons-print').trigger();
+                    } else if (tipe == 9) {
+       
+         $('#formResend').submit();
                     }
                 });
-                $("div.dataTables_filter input").unbind();
+//                $("div.dataTables_filter input").unbind();
 //                $("div.dataTables_filter input").on('keydown', function (e) {
 //                    if (e.which == 13) {
 //                        tableAttendance.draw();
 //                    }
 //                });
             });
-            
-            function createTable(){
+            function getWorkingDays(startDate, endDate) {
+                var result = 0;
+
+                var currentDate = startDate;
+                let dateArr = [];
+                while (currentDate <= endDate) {
+
+                    var weekDay = currentDate.getDay();
+//                    if (weekDay != 0 && weekDay != 6) {
+                    result++;
+                    let tgl = currentDate.getDate();
+                    let mm = parseInt(currentDate.getMonth()) + 1;
+                    let yy = currentDate.getFullYear();
+                    let curdate = currentDate.toLocaleDateString('id');
+//                    console.info('days', curdate, tgl,  parseInt(tgl));
+                    if (parseInt(tgl) < 10) {
+                        tgl = "0" + tgl;
+                    }
+                    if (parseInt(mm) < 10) {
+                        mm = "0" + mm;
+                    }
+                    curdate = tgl + "/" + mm + "/" + yy;
+//                    console.info('days', curdate);
+                    dateArr.push(curdate);
+//                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+
+                }
+
+                return dateArr;
+            }
+
+            function createHeaderColumnOfDateFromArray(arrOfDate) {
+                let te_ha = [];
+                for (var i in arrOfDate) {
+                    te_ha.push('<th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label="">' + arrOfDate[i] + '</th>');
+                }
+                return te_ha.join();
+            }
+
+            function createTable() {
                 tableAttendance = $('#att_table').DataTable({
 //                    processing: true,
                     autoFilter: false,
+//                    retrieve: true,
+                    cache: false,
                     language: {
                         loadingRecords: '&nbsp;',
                         lengthMenu: "_MENU_ records",
@@ -420,17 +529,14 @@ function printDiv(divID) {
 //            processing: '<div class="spinner"></div>'
                     },
                     serverSide: false,
-                    autoWidth: true,
-//        scrollY:        "300px",
+                    autoWidth: false,
+//                            scrollY: "300px",
                             scrollX: true,
                             scrollCollapse: true,
-//        fixedColumns: true,
-//                    fixedColumns: {
-//                        leftColumns: 1
-//                    },
                     ajax: {
-                        url: "{{ url('report/data_beautifullify') }}",
+                        url: "{{ url('resend/data_monthly') }}",
                         data: function (d) {
+//                            d.columns = [];
                             d.startdate = $('#startdate').val(),
                                     d.enddate = $('#enddate').val(),
                                     d.group = $('#group').val(),
@@ -440,6 +546,10 @@ function printDiv(divID) {
                         dataType: 'json'
                     },
                     drawCallback: function (settings) {
+//                        settings.aoHeader = [];
+//                        settings.oInit = [];
+//                        console.info(settings);
+//                        settings.json.input.columns = [];
 //                        console.info('drawCallback')
 //    console.log('table',tableAttendance);
 //    console.log('table',tableAttendance.fixedColumns().left());
@@ -450,7 +560,6 @@ function printDiv(divID) {
 //
                     dom: 'lrtip',
 //                    dom: 'Blfrtip',
-//        dom: '<"float-left"B><"float-right"f>rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
                     buttons: [
                         {
                             text: 'csv',
@@ -470,12 +579,11 @@ function printDiv(divID) {
                             text: 'pdf',
                             extend: 'pdfHtml5',
                                             orientation: 'landscape',
-                                            pageSize: 'LEGAL',
+                                            pageSize: 'A4',
                             customize: function (doc) {
-                                console.info('docstyle',doc.content);
-                                doc.styles.tableHeader.fontSize = 8;    
+                                doc.styles.tableHeader.fontSize = 8;
                                 doc.defaultStyle.fontSize = 7;
-                                doc.content[1].table.widths = ['2%','4%','5%','7%','5%','5%', '5%', '5%',  '5%',  '5%', '5%', '5%',  '5%', '5%', '5%', '5%', '5%', '5%', '5%', '4%', '4%'];
+                                doc.content[1].table.widths = columnWidth;
                             },
                             exportOptions: {
                                 columns: ':visible:not(.not-export-col)'
@@ -489,43 +597,77 @@ function printDiv(divID) {
                             }
                         },
                     ],
-                    columns: [
-                                  {data: 'no_urut', name: 'no_urut'},
-                                  {data: 'orgname', name: 'orgname'},
-                        {data: 'worker_id', name: 'worker_id'},
-                        {data: 'nama_personnel', name: 'nama_personnel'},
-//                                  {data: null, name: 'work_date', render: function (data, type, row) {
-//                                return '<div class="form-control1" id="" type="text" style="" >' + data.work_date + '</div>';
-//                                        }},                        
-                        {data: 'work_date', name: 'work_date',width:60},
-                        {data: 'time_in_0', name: 'time_in_0',width:60},
-                        {data: 'time_ot_0', name: 'time_ot_0',width:60},
-                        {data: 'time_in_1', name: 'time_in_1',width:60},
-                        {data: 'time_ot_1', name: 'time_ot_1',width:60},
-                        {data: 'time_in_2', name: 'time_in_2',width:60},
-                        {data: 'time_ot_2', name: 'time_ot_2',width:60},
-                        {data: 'time_in_3', name: 'time_in_3',width:60},
-                        {data: 'time_ot_3', name: 'time_ot_3',width:60},
-                        {data: 'time_in_4', name: 'time_in_4',width:60},
-                        {data: 'time_ot_4', name: 'time_ot_4',width:60},
-                        {data: 'time_in_5', name: 'time_in_5',width:60},
-                        {data: 'time_ot_5', name: 'time_ot_5',width:60},
-                        {data: 'first_in', name: 'first_in',width:60},
-                        {data: 'last_out', name: 'last_out',width:60},
-                        {data: 'duration', name: 'duration'},
-                        {data: 'total_rest', name: 'total_rest'},
-                        {data: 'ot', name: 'ot'}
-                    ],
+                    columns: columntbl,
+                    columnDefs : columnDeff,
+                    createdRow: function (row, data, dataIndex) {
+                        let tr = $('tr', row);
+                        $('td', row).each(function(i,td){
+                            if(i > 3){
+//                        let td_jam = $('td', row).eq(4).html();
+                                let td_jam = $(td).html();
+                                if (td_jam !== '') {
+                                   // console.info('row', td_jam);
+                                    let split_jam = td_jam.split(',');
+                                    let new_div = "";
+                                    if (split_jam.length > 0) {
+                                        for (var i in split_jam) {
+                                           // console.info('split' + i, split_jam[i]);
+                                            new_div += '<span style="width:150px;display: table;">' + split_jam[i] + '</span><br/>';
+//                                            new_div += split_jam[i];
+                                        }
+                                    }else{
+//                                        new_div +=  split_jam[0];
+                                        new_div += '<span style="width:150px;display: table;">' + split_jam[0] + '</span><br/>';
+                                    }
+                                    
+                                    $(td).html(new_div);
+                                }
+                            }
+                        });
+                    },
+        select: {
+            style: 'multi',
+            selector: 'tr:not(.no-select)'
+        },                            
                     lengthMenu: [
                         [10, 25, 50, 100, -1],
                         [10, 25, 50, 100, 'All'],
                     ],
                     order: [[0, 'asc']]
-                });                
+                });
             }
+            $('#formResend').on('submit', function(e){
+                   var $form = $(this);
+                    $(this).find('input[type="checkbox"]').each(function(i,v){
+                           if(v.checked){
+                               let td  = $(v).parents('tr').find('td').eq(3);
+                               let v_td = $(td).html();
+                               if(typeof v_td !== 'undefined' && (v_td.length > 0)){
+                                    $form.append(
+                                        $('<input>')
+                                            .attr('type', 'hidden')
+                                            .attr('name', 'emp[]')
+                                            .val($(td).html())
+                                    );
+                                }
+                           }
+                            $form.append(
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', 'sdate')
+                                    .val($('#startdate').val())
+                            );                           
+                            $form.append(
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', 'edate')
+                                    .val($('#enddate').val())
+                            );                           
+                   });           
+               });  
         </script>
-        <script src="{{asset('assets/js/report/table.js')}}" type='text/javascript'></script>
-        <style type="text/css">
+        <script src="{{asset('assets/js/resend/table.js')}}" type='text/javascript'></script>
+        <style>
             .dt-buttons {
                 display: none;
             }
@@ -592,16 +734,6 @@ function printDiv(divID) {
                 font-size: 0.8rem;
                 vertical-align: middle;
                 margin-right: 5px;
-            }
-            @media print and (width: 9.5in) and (height: 14in) {
-                @page {
-                    margin: 1in;
-                }
-                body {
-                    margin: 0;
-                    color: #f00;
-                    background-color: #0ff;
-                }
             }
         </style>        
     </body>

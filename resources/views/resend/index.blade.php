@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>Time Attendance Report</title>
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link  href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
@@ -229,7 +230,7 @@ $(document).ready(function () {
     $('#fr_table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url('report/data') }}",
+        ajax: "{{ url('resend/data') }}",
         columns: [
             {data: 'fa_attendance_id', name: 'id'},
             {data: 'swipetime', name: 'swipetime'},

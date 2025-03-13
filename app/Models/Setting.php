@@ -16,6 +16,8 @@ class Setting extends Model
     protected $fillable = [
         'startdate',
         'enddate',
+        'starttime_nightwork',
+        'endtime_nightwork',
         'ip_server_fr',
         'ip_clock_in',
         'ip_clock_out',

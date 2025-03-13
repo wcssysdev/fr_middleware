@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Web;
+namespace App\Console\Commands;
 
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -9,82 +10,69 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
-use App\Models\Worker;
-use DataTables;
+use App\Models\WorkerGroup;
+use App\Models\RequestLog;
 
-class PersonController extends BaseController {
+class PopulateMasterWorker extends Command {
 
-    use AuthorizesRequests,
-        DispatchesJobs,
-        ValidatesRequests;
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'cron:receive_worker';
 
-    public function index(Request $request) {
-        if ($request->ajax()) {
-            $data = Worker::latest()->get();
-            return Datatables::of($data)
-                            ->make(true);
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Get list worker from DSS Dahua';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct() {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     */
+    protected function log_event($params, $responses, $saveNow = '', $url = '', $type = 'MASTER-WORKER') {
+        $newLog = new RequestLog();
+
+        if (empty($saveNow)) {
+            $now = date('Y-m-d H:i:s');
+        } else {
+            $now = $saveNow;
         }
 
-        return view('person/index_log');
+        $newLog->transaction_type = $type;
+        $newLog->url = $url;
+        $newLog->params = json_encode($params);
+        $newLog->response_status = 'OK';
+        $newLog->response_message = json_encode($responses);
+        $newLog->created_at = $now;
+        $newLog->save();
     }
 
-    public function re_pull(Request $request) {
-        try {
-            /*
-            $startdate1 = new \DateTime();
-            $startdate1->modify('-60 minutes');
-            $enddate = $startdate1->format("Y-m-d H:i:s");
-            $data = DB::table('fa_person')
-                    ->select(DB::raw('TO_CHAR("created_at",\'Y\')'))
-                    ->where('created_at', '>=', $enddate)
-                    ->first();
-            if ($data) {
-                echo json_encode([$data]);
-                exit();
-            }
-            */
-            $data_person = $this->get_data_person_from_dss($request);
-            if (($data_person['status']) > 0) {
-                $return = $this->do_save_person($data_person['data']);
-            } else {
-                $return['status'] = 0;
-                $return['data'] = [];
-                $return['code'] = 500;
-                $return['message'] = 'Connection error. Fail get data.';
-            }
-            echo json_encode($return);
-        } catch (\Exception $ex) {
-            $return['status'] = 0;
-            $return['data'] = [];
-            $return['code'] = 500;
-            $return['message'] = $ex->getMessage();
-            echo json_encode($return, 1);
-            exit();
+    public function handle() {
+        $return = 0;
+
+//        $this->log_event([],['ok' => 'Master-Worker']);
+        $data_person = $this->get_data_worker_from_dss(NULL);
+        if (($data_person['status']) > 0) {
+            $return = $this->do_save_worker($data_person['data']);
         }
+        return $return;
     }
 
-    protected function array_change_key_case_recursive($arr, $case = CASE_LOWER) {
-        return array_map(function ($item) use ($case) {
-            if (is_array($item))
-                $item = $this->array_change_key_case_recursive($item, $case);
-            return $item;
-        }, array_change_key_case($arr, $case));
-    }
-
-    protected function set_created_at($arr, $now) {
-        $arr['created_at'] = $now;
-        return $arr;
-    }
-
-    protected function array_add_created_at($arr, $now) {
-        return array_map(function ($item) use ($now) {
-            if (is_array($item))
-                $item = $this->array_add_created_at($item, $now);
-            return $item;
-        }, $this->set_created_at($arr, $now));
-    }
-
-    protected function do_save_person($data_save) {
+    protected function do_save_worker($data_save) {
         /**
          * CLEAN TABLE
          */
@@ -101,9 +89,15 @@ class PersonController extends BaseController {
         return $return;
     }
 
-    protected function get_data_person_from_dss($request, $ip_server = null) {
-//dd([$timestamp_start,$timestamp_end]);
-        date_default_timezone_set('Asia/Kuala_Lumpur');
+    protected function array_change_key_case_recursive($arr, $case = CASE_LOWER) {
+        return array_map(function ($item) use ($case) {
+            if (is_array($item))
+                $item = $this->array_change_key_case_recursive($item, $case);
+            return $item;
+        }, array_change_key_case($arr, $case));
+    }
+
+    protected function get_data_worker_from_dss($request, $ip_server = null) {
         $server = config('face.API_FACEAPI_DOMAIN');
 
         if (empty($ip_server)) {
@@ -180,111 +174,5 @@ class PersonController extends BaseController {
             $return['message'] = 'Connection error. No Token detected.';
         }
         return $return;
-    }
-
-    public function list_formatted(Request $request) {
-        if ($request->ajax()) {
-            $where = " 1 = ?";
-            $val_where = [1];
-            $searching = $request->get('searchbox');
-            if (!empty($searching)) {
-                $where = "(1 = ?) AND (firstname ilike '%$searching%' or personid ilike '%$searching%' or orgcode ilike '%$searching%' or orgname ilike '%$searching%')";
-            }
-            $data = DB::table('fa_person')
-                    ->select(
-                            'firstname',
-                            'personid',
-                            'orgcode',
-                            'orgname',
-                            'companyname',
-                            'email',
-                            'tel'
-                    )
-                    ->orWhereRaw("$where", $val_where)
-                    ->orderBy('fa_person_id', 'asc')
-//                ->limit(10)
-                    ->get();
-
-            $no = 1;
-            foreach ($data as $ky => $dtperson) {
-                $dtperson->no_urut = $no;
-                $data[$ky] = $dtperson;
-                $no++;
-            }
-            return Datatables::of($data)
-                            ->make(true);
-        }
-        return view('person/index_pretty_log');
-    }
-
-    public function getData_att(Request $request) {
-        if ($request->ajax()) {
-            $data = DB::table('fa_person')
-                    ->select(
-                            'firstname',
-                            'personid',
-                            'orgcode',
-                            'orgname',
-                            'remark',
-                            'facepicture',
-                            'companyname',
-                            'email',
-                            'tel'
-                    )
-//                    ->whereIn('sent_cpi', ['F', 'Y'])
-//                    ->offset(0)
-                    ->orderBy('fa_person_id', 'asc')
-//                ->limit(10)
-                    ->get();
-            return Datatables::of($data)
-                            ->make(true);
-        }
-//        var_dump($request);
-    }
-
-    public function getData(Request $request) {
-        if ($request->ajax()) {
-            $data = DB::table('fa_person')
-                    ->select(
-                            'firstname',
-                            'personid',
-                            'orgcode',
-                            'orgname',
-                            'remark',
-                            'facepicture',
-                            'companyname',
-                            'email',
-                            'tel'
-                    )
-                    ->orderBy('fa_person_id', 'asc')
-//                ->limit(10)
-                    ->get();
-            return Datatables::of($data)
-                            ->make(true);
-        }
-//        var_dump($request);
-    }
-
-    public function getDataFormatted(Request $request) {
-        if ($request->ajax()) {
-            $data = DB::table('fa_person')
-                    ->select(
-                            'firstname',
-                            'personid',
-                            'orgcode',
-                            'orgname',
-                            'facepicture',
-                            'companyname',
-                            'email',
-                            'tel',
-                            'remark',
-                    )
-                    ->orderBy('fa_person_id', 'asc')
-//                ->limit(10)
-                    ->get();
-            return Datatables::of($data)
-                            ->make(true);
-        }
-//        var_dump($request);
     }
 }

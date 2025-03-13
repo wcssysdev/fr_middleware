@@ -29,17 +29,43 @@ class GroupController extends BaseController {
     }
 
     public function re_pull(Request $request) {
-        $data_person = $this->get_data_worker_group_from_dss($request);
-        if (($data_person['status']) > 0) {
-            $return = $this->do_save_group($data_person['data']);
-        } else {
+        try {
+
+/*
+            $startdate1 = new \DateTime();
+            $startdate1->modify('-30 minutes');
+            $enddate = $startdate1->format("Y-m-d H:i:s");
+//                echo json_encode(['jam' => $enddate]);die();
+            $data = DB::table('fa_group')
+                    ->select(DB::raw('TO_CHAR("created_at",\'Y\')'))
+                    ->where('created_at', '>=', $enddate)
+                    ->first();
+            if ($data) {
+                echo json_encode([$data]);
+                exit();
+            }
+*/
+
+
+            $data_person = $this->get_data_worker_group_from_dss($request);
+            if (($data_person['status']) > 0) {
+                $return = $this->do_save_group($data_person['data']);
+            } else {
+                $return['status'] = 0;
+                $return['data'] = [];
+                $return['code'] = 500;
+                $return['message'] = 'Connection error. Fail get data.';
+            }
+            echo json_encode($return, 1);
+            exit();
+        } catch (\Exception $ex) {
             $return['status'] = 0;
             $return['data'] = [];
             $return['code'] = 500;
-            $return['message'] = 'Connection error. Fail get data.';
+            $return['message'] = $ex->getMessage();
+            echo json_encode($return, 1);
+            exit();
         }
-        echo json_encode($return, 1);
-        exit();
     }
 
     protected function array_change_key_case_recursive($arr, $case = CASE_LOWER) {
@@ -81,8 +107,8 @@ class GroupController extends BaseController {
 
     protected function get_data_worker_group_from_dss($request, $ip_server = null) {
 //dd([$timestamp_start,$timestamp_end]);
+        date_default_timezone_set('Asia/Kuala_Lumpur');
         $server = config('face.API_FACEAPI_DOMAIN');
-
         if (empty($ip_server)) {
             
         } else {
@@ -99,20 +125,19 @@ class GroupController extends BaseController {
                 /**
                  * tutup dulu
                  */
-                  $ch = curl_init("https://$server//obms/api/v1.1/acs/person-group/list");
-                  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                  'Content-Type:application/json;charset=UTF-8',
-                  'X-Subject-Token:' . $_token
-                  )
-                  );
-                  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-                  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-                  $result = curl_exec($ch);
-                  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                  curl_close($ch);
-
+                $ch = curl_init("https://$server//obms/api/v1.1/acs/person-group/list");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Content-Type:application/json;charset=UTF-8',
+                    'X-Subject-Token:' . $_token
+                        )
+                );
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+                $result = curl_exec($ch);
+                $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
 
 //                $httpcode = 200;
 //dd($result);
@@ -165,9 +190,9 @@ class GroupController extends BaseController {
             $where = " 1 = ?";
             $val_where = [1];
             $searching = $request->get('searchbox');
-            if(!empty($searching)){
+            if (!empty($searching)) {
                 $where = "(1 = ?) AND (\"orgCode\" ilike '%$searching%' or \"parentOrgCode\" ilike '%$searching%' or \"orgName\" ilike '%$searching%')";
-            }            
+            }
             $data = DB::table('fa_group')
                     ->select(
                             "orgCode",
