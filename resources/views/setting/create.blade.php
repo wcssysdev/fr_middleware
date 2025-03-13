@@ -8,7 +8,7 @@
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta name="robots" content="noindex,nofollow">
         <meta content="" name="author" />
-        <base href="http://localhost:8080/faceapp/">
+        <base href="http://localhost/faceapp/">
         <link rel="shortcut icon" href="{{asset('assets/img/ioi_icon.png')}}" />
 
         <link href="{{asset('vendor/font-awesome-old/css/font-awesome.min.css')}}" rel="stylesheet" type="text/css" />
@@ -134,21 +134,37 @@
                                     </a>                                    
                                 </li>
                                 <li class="nav-item">
+                                    <a href="{{ route('webmonthly') }}" class="nav-link">
+                                        <i class="fa fa-chart-bar"></i>
+                                        <span class="title">Report Monthly</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow "></span>
+                                    </a>                                    
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ route('weblog') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Log</span>
                                         <span class="selected"></span>
                                         <span class="arrow "></span>
                                     </a>                                    
-                                </li>                                
+                                </li> 
                                 <li class="nav-item">
                                     <a href="{{ route('sendsapindex') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Sent Data</span>
+                                        <span class="title">Get Data</span>
                                         <span class="selected"></span>
                                         <span class="arrow "></span>
                                     </a>                                    
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('webresend') }}" class="nav-link">
+                                        <i class="fa fa-chart-bar"></i>
+                                        <span class="title">Manual Send</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow "></span>
+                                    </a>                                    
+                                </li>                                
                             </ul>
                         </li>
                     </ul>
@@ -193,7 +209,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label class="col-md-5 control-label"><strong>Date Time Start</strong> </label>
+                                                        <label class="col-md-5 control-label"><strong>Time Start [Normal work]</strong> </label>
                                                         <div class="col-md-7">
                                                             <input type="text" name="startdate" value="{{$setting->startdate}}" id="startdate" class="form-control" placeholder="Start Date">
                                                             @error('startdate')
@@ -202,11 +218,29 @@
                                                         </div>
                                                     </div>                                                  
                                                     <div class="form-group">
-                                                        <label class="col-md-5 control-label"><strong>Date Time End</strong> </label>
+                                                        <label class="col-md-5 control-label"><strong>Time End [Normal work]</strong> </label>
                                                         <div class="col-md-7">
                                                             <input type="text" name="enddate" value="{{$setting->enddate}}" id="enddate" class="form-control" placeholder="End Date">
                                                         </div>
                                                         @error('enddate')
+                                                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>                                                    
+                                                    <div class="form-group">
+                                                        <label class="col-md-5 control-label"><strong>Time Start [Night work]</strong> </label>
+                                                        <div class="col-md-7">
+                                                            <input type="text" name="starttime_nightwork" value="{{$setting->starttime_nightwork}}" id="starttime_nightwork" class="form-control" placeholder="HH:IS">
+                                                            @error('starttime_nightwork')
+                                                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>                                                  
+                                                    <div class="form-group">
+                                                        <label class="col-md-5 control-label"><strong>Time End [Night work]</strong> </label>
+                                                        <div class="col-md-7">
+                                                            <input type="text" name="endtime_nightwork" value="{{$setting->endtime_nightwork}}" id="endtime_nightwork" class="form-control" placeholder="HH:IS">
+                                                        </div>
+                                                        @error('endtime_nightwork')
                                                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                                                         @enderror
                                                     </div>                                                    
@@ -277,7 +311,7 @@
 
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.0.4 (20231003)</a>
+                <a> FaceApi IOI V 3.4.0.0 ((20250313))</a>
             </div>
             <div class="scroll-to-top">
                 <i class="icon-arrow-up"></i>

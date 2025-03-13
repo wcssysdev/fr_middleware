@@ -1,12 +1,13 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Log Fail Data</title>
-        <meta name="csrf-token" content="{{ csrf_token() }}">        
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <title>FR Manual Resend SAP</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta name="robots" content="noindex,nofollow">
         <meta content="" name="author" />
+        <base href="http://facemware.test/">
         <link rel="shortcut icon" href="{{asset('assets/img/ioi_icon.png')}}" />
 
         <link href="{{asset('vendor/font-awesome-old/css/font-awesome.min.css')}}" rel="stylesheet" type="text/css" />
@@ -33,39 +34,6 @@
         <link href="{{asset('vendor/template_assets/layouts/layout4/css/themes/default.min.css')}}" rel="stylesheet" type="text/css" id="style_color" />
         <link href="{{asset('vendor/template_assets/layouts/layout4/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
         <link rel="shortcut icon" type="image/png" href="{{asset('assets/img/ioi_icon.png')}}"/>
-        <style>
-            #spinner-div {
-                position: fixed;
-                display: none;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                text-align: center;
-                background-color: rgba(255, 255, 255, 0.8);
-                z-index: 2;
-            }
-            .spinner-border {
-                margin-top:25%;
-                display: inline-block;
-                width: 2rem;
-                height: 2rem;
-                vertical-align: -.125em;
-                border: .25em solid currentColor;
-                border-right-color: transparent;
-                border-radius: 50%;
-                /*                -webkit-animation: .75s linear infinite spinner-border;
-                                animation: .75s linear infinite spinner-border;*/
-
-                -webkit-animation-name: drive;
-                -webkit-animation-duration: 2s;
-                -webkit-animation-timing-function: ease-in;
-                -webkit-animation-iteration-count: 1;
-            }
-            .pt-5 {
-                padding-top: 3rem !important;
-            }
-        </style>         
     </head>
     <body class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo" onafterprint="myFunction()">
         <div class="page-header navbar navbar-fixed-top">
@@ -97,7 +65,7 @@
                                 <span class="selected"></span>
                                 <span class="arrow "></span>
                             </a>
-                        </li> 
+                        </li>                                
                         <li class="nav-item ">
                             <a href="{{ route('person') }}" class="nav-link">
                                 <i class="fa fa-database"></i>
@@ -105,7 +73,7 @@
                                 <span class="selected"></span>
                                 <span class="arrow "></span>
                             </a>
-                        </li>                           
+                        </li>                         
                         <li class="nav-item open">
                             <a href="javascript:;" class="nav-link nav-toggle">
                                 <i class="fa fa-chart-bar"></i>
@@ -114,15 +82,15 @@
                                 <span class="arrow "></span>
                             </a>
                             <ul class="sub-menu" style="display: block;">
-                                <li class="nav-item ">
+                                <li class="nav-item">
                                     <a href="{{ route('setting.index') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Setting</span>
                                         <span class="selected"></span>
                                         <span class="arrow "></span>
                                     </a>
-                                </li>                               
-                                <li>
+                                </li>                                
+                                <li class="nav-item">
                                     <a href="{{ route('webreport') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Report</span>
@@ -137,15 +105,15 @@
                                         <span class="selected"></span>
                                         <span class="arrow "></span>
                                     </a>                                    
-                                </li>                                 
-                                <li class="nav-item active">
+                                </li>                                
+                                <li class="nav-item">
                                     <a href="{{ route('weblog') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
                                         <span class="title">Log</span>
                                         <span class="selected"></span>
                                         <span class="arrow "></span>
                                     </a>                                    
-                                </li>                                 
+                                </li>                                
                                 <li class="nav-item">
                                     <a href="{{ route('sendsapindex') }}" class="nav-link">
                                         <i class="fa fa-chart-bar"></i>
@@ -161,7 +129,7 @@
                                         <span class="selected"></span>
                                         <span class="arrow "></span>
                                     </a>                                    
-                                </li>                              
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -171,7 +139,7 @@
                 <div class="page-content">
                     <div class="page-head">
                         <div class="page-title">
-                            <h1>Log Fail Data</h1>
+                            <h1>FR Manual Resend SAP</h1>
                         </div>
                     </div>
                     <ul class="page-breadcrumb breadcrumb">
@@ -190,30 +158,58 @@
 
                     <div class="row">
                         <div class="col-md-12">
+                                @if ($message = Session::get('success'))
+                                <div class="alert alert-success">
+                                    <p>{{ $message }}</p>
+                                </div>
+                                @endif                            
                         </div>
                         <div class="col-md-12">
                             <div class="portlet light form-fit bordered">
                                 <div class="portlet-body form">
                                     <form class="form-horizontal form-bordered" action="transactions/oph" method="GET">
+                                        <input type="hidden" name="csrf-token" content="{{ csrf_token() }}">
                                         <div class="form-group">
-                                            <label class="col-md-1 control-label" style="text-align:left;">Date</label>
-                                            <div class="col-md-2">
+                                            <label class="col-md-1 control-label" style="text-align:left;">Work Date</label>
+                                            <div class="col-md-4">
                                                 <div class="input-group date-picker input-daterange" data-date-format="yyyy-mm-dd" data-date-end-date="0d">
-                                                    <input class="form-control" name="from" placeholder="From" type="text" id="enddate" value="{{date('Y-m-d')}}" autocomplete="off">
+                                                    <input class="form-control" name="from" placeholder="From" type="text" id="startdate" value="{{date('Y-m-d')}}" autocomplete="off">
+                                                    <span class="input-group-addon"> to </span>
+                                                    <input class="form-control" name="to" placeholder="To" type="text" id="enddate" value="{{date('Y-m-d')}}" autocomplete="off"> 
                                                 </div>
                                             </div>
-                                            <label class="col-md-1 control-label" style="text-align:left;">Status</label>
+                                            <label class="col-md-1 control-label" style="text-align:left;">Group</label>
                                             <div class="col-md-2">
-                                                <div class="input-group date-picker input-daterange" data-date-format="yyyy-mm-dd" data-date-end-date="0d">
-                                                    <select class="form-control" id="status" name="status" aria-controls="" class="">
+                                                <div class="input-group">
+                                                    <select class="form-control" id="group" name="group" aria-controls="" class="">
                                                         <option value="ALL">ALL</option>
-                                                        <option value="Y">Success</option>
-                                                        <option value="F">Failed</option>
+                                                        @foreach ($group as $grp)
+                                                        <option value="{{$grp->orgCode}}">{{$grp->orgCode .'-'.$grp->orgName}}</option>
+                                                        @endforeach
                                                     </select>                                                    
                                                 </div>
+                                            </div> 
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label" style="text-align:left;">System Will get data between:</label>
+                                     
+                                            <div class="col-md-4">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"> [Startdate] '07:00:00'</span>
+                                                    <span class="input-group-addon"> Until</span>
+                                                    <span class="input-group-addon"> [End date + 1 day] '09:00:00'</span>
+                                                </div>
                                             </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-1 control-label" style="text-align:left;">Search</label>
+                                            <div class="col-md-4">
+                                                <div class="input-group">
+                                                    <input class="form-control" name="searching" type="text" autocomplete="off"> 
+                                                </div>
+                                            </div>                                        
                                             <div class="col-md-2">
-                                                <button type="button" class="btn btn-circle btn-block btn-outline btn-md blue doSearchLog"> <i class="fa fa-search"></i> Filter
+                                                <button type="button" class="btn btn-circle btn-block btn-outline btn-md blue doSearch"> <i class="fa fa-search"></i> Filter
                                                 </button>
                                             </div>
                                         </div>
@@ -226,34 +222,34 @@
                             <div class="portlet light bordered">
                                 <div class="portlet-title">
                                     <div class="caption">
-                                        <span class="caption-subject font-blue sbold uppercase blue">Log Fail Data</span>
+                                        <span class="caption-subject font-blue sbold blue">FR Manual Resend SAP</span>
                                     </div>
                                     <div class="actions">
                                         <div class="btn-group btn-group-devided" >
+                                            <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="9" id="export_transaction_btn"><i class="fa fa-download" ></i> Resend</button>
                                             <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download" ></i> Excel</button>
-                                            <!--<button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="99" id="export_transaction_btn"><i class="fa fa-send" ></i> Resend Failed Data</button>-->
+                                            <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="3" id="export_transaction_btn"><i class="fa fa-download" ></i> PDF</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="portlet-body">
                                     <div class="table">
-                                        <table class="table table-bordered table-hover" id="log_table">
+                                <form action="{{ route('webtransfersap') }}" method="POST" id="formResend">
+                                    @csrf
+                                    <input type="hidden" name="date" value="">
+                                        <table class="table table-bordered" style="font-size:8px;" id="att_table">
                                             <thead>
                                                 <tr role="row">
                                                     <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label=" "> No. </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="70px"> Device IP </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="70px"> Worker Code </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 51px; text-align: center;" > Worker ID </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 51px; text-align: center;" > Alarm Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 51px; text-align: center;" > Sending Time </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 51px; text-align: center;" > Clock IN/OUT </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 51px; text-align: center;" > Status </th>
-                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 151px; text-align: center;"> Remark </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="60px" aria-label=" ID"> Group </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Code </th>
+                                                    <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" name"> Emp. Name </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                             </tbody>
                                         </table>
+                                </form>
                                     </div>
                                 </div>
                             </div>
@@ -270,12 +266,21 @@
                 <i class="icon-arrow-up"></i>
             </div>
         </div>
-        <div id="spinner-div" class="pt-5">
-            <div class="spinner-border text-primary" role="status">
-            </div>
-        </div>        
         <div class="quick-nav-overlay"></div>
-
+        <div style ="display:none;">
+            <table class="table table-bordered table-hover" style="font-size:8px;" id="clone_table">
+                <thead>
+                    <tr role="row">                                                           
+                        <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label=" "> No. </th>
+                        <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="60px" aria-label=" ID"> Group </th>
+                        <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" style="width: 30px; text-align: left;overflow-wrap: anywhere;" aria-label=" code"> Emp. Code </th>
+                        <th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label=" name"> Emp. Name </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>            
+        </div>
         <script src="{{asset('vendor/template_assets/global/plugins/jquery.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('vendor/template_assets/global/plugins/bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('vendor/template_assets/global/plugins/js.cookie.min.js')}}" type="text/javascript"></script>
@@ -320,19 +325,21 @@ var timer_fr = {
         var self = this;
         this.interval = setInterval(function () {
             self.seconds--;
+
             if (self.seconds == 0) {
                 //window.location.reload();
                 self.seconds = 50;
-                tableLog.draw();
+                tableAttendance.draw();
             }
         }, 1000);
     },
+
     stop: function () {
         window.clearInterval(this.interval)
     }
 }
 function myFunction() {
-    location.reload();
+//    location.reload();
 }
 $(document).ready(function ()
 {
@@ -341,7 +348,7 @@ $(document).ready(function ()
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    timer_fr.start();
+//    timer_fr.start();
 })
 
 function printDiv(divID) {
@@ -358,67 +365,163 @@ function printDiv(divID) {
     //Restore orignal HTML
     document.body.innerHTML = oldPage;
 }
+// var printEvent = window.matchMedia('print');
+// printEvent.addListener(function(printEnd) {
+//     if (!printEnd.matches) {
+//         location.reload();
+//     };
+// });
 
 
 
         </script>
         <script language="javascript" type="text/javascript">
-            var tableLog;
+            var tableAttendance;
+            var searching;
+            var columntbl;
+            var columnWidth;
+            var columnDeff;
+            const columnInit = [
+                {data: 'no_urut', name: 'no_urut'},
+                {data: 'orgname', name: 'orgname'},
+                {data: 'worker_id', name: 'worker_id'},
+                {data: 'nama_personnel', name: 'nama_personnel'}
+            ];
+            const columnDefs1= [
+                 {
+                     targets: 0,
+                     checkboxes: {
+                         selectRow: true
+                     },
+                     orderable: false,
+                 },
+                 { orderable: false, targets: 0 },
+                 { orderable: false, targets: -1 },
+                 { orderable: false, targets: -2 },
+             ];            
+            const clmWdth = ['3%', '1.75%', '3%', '5%'];
+
             $(document).ready(function () {
-                createTable();
-                $(document).on('click', '.doSearchLog', function (e) {
+                columntbl = columnInit;
+                columnWidth = clmWdth;
+                //createTable();
+                $(document).on('click', '.doSearch', function () {
+                    if (typeof tableAttendance !== 'undefined') {
+                        tableAttendance.clear().destroy();
+                    }
                     var e_date = $('#enddate').val();
+//                    console.info('edate', e_date);
                     if (e_date == '') {
-                        e.preventDefault();
                         return false;
                     }
-                    if (typeof tableLog !== 'undefined') {
-                        tableLog.clear().destroy();
-                    }                     
+                    let sdate = $('#startdate').val();
+                    let edate = $('#enddate').val();
+                    let js_sdate = new Date(sdate);
+                    let js_edate = new Date(edate);
+                    let workingDays = getWorkingDays(js_sdate, js_edate);
+
+                    let tbl_tr = $('#clone_table').find('thead').html();
+                    let tbl_tr_clone = $(tbl_tr).clone();
+                    let ths = createHeaderColumnOfDateFromArray(workingDays);
+                    $(tbl_tr_clone).append(ths);
+                    $('#att_table').find('thead').html(tbl_tr_clone);
+//                    console.info('columnInit', columnInit);
+                    columntbl = [];
+                    for (var k in columnInit) {
+                        columntbl.push(columnInit[k]);
+                    }
+                    columnWidth = [];
+                    for (var k in clmWdth) {
+                        columnWidth.push(clmWdth[k]);
+                    }
+                    columnDeff = columnDefs1;
+                    for (var j in workingDays) {
+//                        console.info('workingDays' + j, workingDays[j]);
+                        columntbl.push({data: workingDays[j], searchable: false, orderable: false});
+                        columnWidth.push('3%');
+                        columnDeff.push({ orderable: false, targets: 0 });
+                    }
+//                    console.info('columntbl', columntbl,'columnWidth',columnWidth);
                     createTable();
+                    tableAttendance.draw();
                 });
+                $('.doSearch').click();
                 $(document).on('click', '#export_transaction_btn', function (i) {
                     var tipe = i.target.dataset.type;
                     if (tipe == 1) {
-                        tableLog.button('.buttons-csv').trigger();
+                        tableAttendance.button('.buttons-csv').trigger();
                     } else if (tipe == 2) {
-                        tableLog.button('.buttons-excel').trigger();
+//                        tableAttendance.button('.buttons-excel').trigger();
+//                        tableAttendance.button('.buttons-excel').trigger();
+                        let startdate = $('#startdate').val(),
+                                enddate = $('#enddate').val(),
+                                group = $('#group').val(),
+                                search = $('input[name="searching"]').val();
+                        let url = "{{ url('resend/export_monthly') }}";
+                        let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "&searchbox=" + search + "";
+                        window.open(urlstr);
                     } else if (tipe == 3) {
-                        tableLog.button('.buttons-print').trigger();
-                    } else if (tipe == 99) {
-                        $.ajax({
-                            method: "POST",
-                            url: "sendsap.transfer",
-                            data: {type: 'resend'},
-                            dataType: 'json',
-                            beforeSend: function () {
-                                $('#spinner-div').show();
-                            },
-                            success: function (msg) {
-                                $('#spinner-div').hide();
-                                if (msg.status == 'success') {
-                                    alert("Transfer completed.");
-                                } else {
-                                    var txt = 'Transfer Completed.' + msg.message
-                                    alert(txt);
-                                }
-                            }
-                        })
+                        tableAttendance.button('.buttons-pdf').trigger();
+                    } else if (tipe == 4) {
+                        tableAttendance.button('.buttons-print').trigger();
+                    } else if (tipe == 9) {
+       
+         $('#formResend').submit();
                     }
                 });
-                $("div.dataTables_filter input").unbind();
-                $("div.dataTables_filter input").on('keydown', function (e) {
-                    if (e.which == 13) {
-                        tableLog.draw();
-                    }
-                });
+//                $("div.dataTables_filter input").unbind();
+//                $("div.dataTables_filter input").on('keydown', function (e) {
+//                    if (e.which == 13) {
+//                        tableAttendance.draw();
+//                    }
+//                });
             });
-        </script>
-        <script language="javascript" type="text/javascript">
-            function createTable(){
-                tableLog = $('#log_table').DataTable({
+            function getWorkingDays(startDate, endDate) {
+                var result = 0;
+
+                var currentDate = startDate;
+                let dateArr = [];
+                while (currentDate <= endDate) {
+
+                    var weekDay = currentDate.getDay();
+//                    if (weekDay != 0 && weekDay != 6) {
+                    result++;
+                    let tgl = currentDate.getDate();
+                    let mm = parseInt(currentDate.getMonth()) + 1;
+                    let yy = currentDate.getFullYear();
+                    let curdate = currentDate.toLocaleDateString('id');
+//                    console.info('days', curdate, tgl,  parseInt(tgl));
+                    if (parseInt(tgl) < 10) {
+                        tgl = "0" + tgl;
+                    }
+                    if (parseInt(mm) < 10) {
+                        mm = "0" + mm;
+                    }
+                    curdate = tgl + "/" + mm + "/" + yy;
+//                    console.info('days', curdate);
+                    dateArr.push(curdate);
+//                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+
+                }
+
+                return dateArr;
+            }
+
+            function createHeaderColumnOfDateFromArray(arrOfDate) {
+                let te_ha = [];
+                for (var i in arrOfDate) {
+                    te_ha.push('<th class="all sorting" tabindex="0" aria-controls="fr_table" rowspan="1" colspan="1" width="30px" aria-label="">' + arrOfDate[i] + '</th>');
+                }
+                return te_ha.join();
+            }
+
+            function createTable() {
+                tableAttendance = $('#att_table').DataTable({
 //                    processing: true,
                     autoFilter: false,
+//                    retrieve: true,
+                    cache: false,
                     language: {
                         loadingRecords: '&nbsp;',
                         lengthMenu: "_MENU_ records",
@@ -426,30 +529,37 @@ function printDiv(divID) {
 //            processing: '<div class="spinner"></div>'
                     },
                     serverSide: false,
-                    autoWidth: true,
-//        scrollY:        "300px",
-                            scrollX: false,
-                            scrollCollapse: false,
-//        fixedColumns: true,
-//                    fixedColumns: {
-//                        leftColumns: 1
-//                    },
+                    autoWidth: false,
+//                            scrollY: "300px",
+                            scrollX: true,
+                            scrollCollapse: true,
                     ajax: {
-                        url: "{{ url('log/data_beautifullify_log') }}",
+                        url: "{{ url('resend/data_monthly') }}",
                         data: function (d) {
-                            d.columns = [];
-                            d.enddate = $('#enddate').val(),
-                                    d.status = $('#status').val(),
-                                    d.searchbox = $("div.dataTables_filter input").val()
+//                            d.columns = [];
+                            d.startdate = $('#startdate').val(),
+                                    d.enddate = $('#enddate').val(),
+                                    d.group = $('#group').val(),
+                                    d.searchbox = $('input[name="searching"').val();
                         },
                         method: 'get',
                         dataType: 'json'
                     },
                     drawCallback: function (settings) {
+//                        settings.aoHeader = [];
+//                        settings.oInit = [];
+//                        console.info(settings);
+//                        settings.json.input.columns = [];
+//                        console.info('drawCallback')
+//    console.log('table',tableAttendance);
+//    console.log('table',tableAttendance.fixedColumns().left());
+//   console.log(settings.json);
+                        //do whatever  
+//                        console.info('$("div.dataTables_filter input").val()',searching);
                     },
 //
-                    dom: 'Blfrtip',
-//        dom: '<"float-left"B><"float-right"f>rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
+                    dom: 'lrtip',
+//                    dom: 'Blfrtip',
                     buttons: [
                         {
                             text: 'csv',
@@ -466,6 +576,20 @@ function printDiv(divID) {
                             }
                         },
                         {
+                            text: 'pdf',
+                            extend: 'pdfHtml5',
+                                            orientation: 'landscape',
+                                            pageSize: 'A4',
+                            customize: function (doc) {
+                                doc.styles.tableHeader.fontSize = 8;
+                                doc.defaultStyle.fontSize = 7;
+                                doc.content[1].table.widths = columnWidth;
+                            },
+                            exportOptions: {
+                                columns: ':visible:not(.not-export-col)'
+                            }
+                        },
+                        {
                             text: 'print',
                             extend: 'print',
                             exportOptions: {
@@ -473,35 +597,76 @@ function printDiv(divID) {
                             }
                         },
                     ],
-                    columns: [
-                        {data: 'no_urut', name: 'no_urut'},
-                        {data: 'devicename', name: 'devicename'},
-                        {data: 'personid', name: 'personid'},
-                        {data: 'firstname', name: 'firstname'},
-                        {data: 'alarmtime', name: 'alarmtime'},
-                        {data: 'created_at', name: 'created_at'},
-                        {data: 'accesstype', name: 'accesstype'},
-//                    {data: 'sent_cpi', name: 'sent_cpi'},
-                                  {data: null, name: 'sent_cpi', render: function (data, type, row) {
-                                var stts = 'Failed';
-                                if (data.sent_cpi == 'Y') {
-                                    stts = 'Success';
+                    columns: columntbl,
+                    columnDefs : columnDeff,
+                    createdRow: function (row, data, dataIndex) {
+                        let tr = $('tr', row);
+                        $('td', row).each(function(i,td){
+                            if(i > 3){
+//                        let td_jam = $('td', row).eq(4).html();
+                                let td_jam = $(td).html();
+                                if (td_jam !== '') {
+                                   // console.info('row', td_jam);
+                                    let split_jam = td_jam.split(',');
+                                    let new_div = "";
+                                    if (split_jam.length > 0) {
+                                        for (var i in split_jam) {
+                                           // console.info('split' + i, split_jam[i]);
+                                            new_div += '<span style="width:150px;display: table;">' + split_jam[i] + '</span><br/>';
+//                                            new_div += split_jam[i];
+                                        }
+                                    }else{
+//                                        new_div +=  split_jam[0];
+                                        new_div += '<span style="width:150px;display: table;">' + split_jam[0] + '</span><br/>';
+                                    }
+                                    
+                                    $(td).html(new_div);
                                 }
-                                return stts;
-//                    return '<div class="form-control1" id="" type="text" style="font-size: 0.75rem;width: 210px;padding: .5rem 0;" >' + data.nama_personnel + '</div>';
-                                        }},
-                        {data: 'remark', name: 'remark'},
-                    ],
+                            }
+                        });
+                    },
+        select: {
+            style: 'multi',
+            selector: 'tr:not(.no-select)'
+        },                            
                     lengthMenu: [
                         [10, 25, 50, 100, -1],
                         [10, 25, 50, 100, 'All'],
                     ],
                     order: [[0, 'asc']]
-                });       
+                });
             }
-            </script>
-            
-        <script src="{{asset('assets/js/report/table_log.js')}}" type='text/javascript'></script>
+            $('#formResend').on('submit', function(e){
+                   var $form = $(this);
+                    $(this).find('input[type="checkbox"]').each(function(i,v){
+                           if(v.checked){
+                               let td  = $(v).parents('tr').find('td').eq(3);
+                               let v_td = $(td).html();
+                               if(typeof v_td !== 'undefined' && (v_td.length > 0)){
+                                    $form.append(
+                                        $('<input>')
+                                            .attr('type', 'hidden')
+                                            .attr('name', 'emp[]')
+                                            .val($(td).html())
+                                    );
+                                }
+                           }
+                            $form.append(
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', 'sdate')
+                                    .val($('#startdate').val())
+                            );                           
+                            $form.append(
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', 'edate')
+                                    .val($('#enddate').val())
+                            );                           
+                   });           
+               });  
+        </script>
+        <script src="{{asset('assets/js/resend/table.js')}}" type='text/javascript'></script>
         <style>
             .dt-buttons {
                 display: none;
