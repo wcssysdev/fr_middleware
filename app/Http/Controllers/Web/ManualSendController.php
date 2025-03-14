@@ -161,7 +161,7 @@ class ManualSendController extends BaseController {
 
 
             $list_workdays = $this->list_of_working_days($startdate_ori, $enddate_ori);
-//            dd($list_workdays);
+            $workdays_keys = array_keys($list_workdays);
 
             $swipetime = [];
             $new_data = [];
@@ -287,17 +287,25 @@ class ManualSendController extends BaseController {
 //                print_r($direct);echo "\n";
                 $all_tgl = [];
                 foreach ($direct as $tgl => $rows) {
+                    if (!in_array($tgl, $workdays_keys)) {
+                        unset($swipetime[$personid][$tgl]);
+                        continue;
+                    }
                     $j = 0;
                     $rowData = [];
                     foreach ($rows as $dt) {
 //                        print_r($dt);echo "\n";
                         $type = substr($dt, -1);
-                        $v_dir = substr($dt, 0, -1);
+                        $v_dir = trim(substr($dt, 0, -1));
                         if ($type == 'I') {
                             $rowData[$j] = $v_dir;
                             $j++;
                         } elseif ($type == 'O') {
-                            $rowData[($j - 1)] = $rowData[($j - 1)] . ' : ' . $v_dir;
+                            if (count($rowData) < 1) {
+                                $rowData[0] = $v_dir;
+                            } else {
+                                $rowData[($j - 1)] = $rowData[($j - 1)] . ' : ' . $v_dir;
+                            }
                         }
                     }
                     if ($rowData) {
@@ -425,7 +433,7 @@ class ManualSendController extends BaseController {
             $new_dir = [];
             foreach ($dir_in as $k => $v) {
                 $type = substr($v, -1);
-                $v_dir = substr($v, 0, -1);
+                $v_dir = trim(substr($v, 0, -1));
 
                 $intval_v = preg_replace('/[^0-9]/', '', $v_dir);
 //                    print_r($intval_v);
@@ -437,7 +445,8 @@ class ManualSendController extends BaseController {
                 if ($k < 1 && $type == "I") {
                     $tgl_v1 = substr($v, 0, 10);
                     $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v1);
-                    $tgl_trx = $tgl_v = (String) $tgl_create->format('d/m/Y');
+                    $tgl_v = (String) $tgl_create->format('d/m/Y');
+                    $tgl_trx = $tgl_v;
                     $new_dir[$tgl_v][] = $v;
                     $intval_dir_in = intval($intval_v) + 60;
                     $type_trx = "I";
@@ -508,17 +517,25 @@ class ManualSendController extends BaseController {
 //                print_r($direct);echo "\n";
             $all_tgl = [];
             foreach ($direct as $tgl => $rows) {
+                if (!in_array($tgl, $workdays_keys)) {
+                    unset($swipetime[$personid][$tgl]);
+                    continue;
+                }
                 $j = 0;
                 $rowData = [];
                 foreach ($rows as $dt) {
 //                        print_r($dt);echo "\n";
                     $type = substr($dt, -1);
-                    $v_dir = substr($dt, 0, -1);
+                    $v_dir = trim(substr($dt, 0, -1));
                     if ($type == 'I') {
                         $rowData[$j] = $v_dir;
                         $j++;
                     } elseif ($type == 'O' && $j > 0) {
-                        $rowData[($j - 1)] = $rowData[($j - 1)] . ' : ' . $v_dir;
+                        if (count($rowData) < 1) {
+                            $rowData[0] = $v_dir;
+                        } else {
+                            $rowData[($j - 1)] = $rowData[($j - 1)] . ' : ' . $v_dir;
+                        }
                     }
                 }
                 if ($rowData) {
@@ -708,7 +725,7 @@ class ManualSendController extends BaseController {
             $new_dir = [];
             foreach ($dir_in as $k => $v) {
                 $type = substr($v, -1);
-                $v_dir = substr($v, 0, -1);
+                $v_dir = trim(substr($v, 0, -1));
 
                 $intval_v = preg_replace('/[^0-9]/', '', $v_dir);
 //                    print_r($intval_v);
@@ -720,7 +737,8 @@ class ManualSendController extends BaseController {
                 if ($k < 1 && $type == "I") {
                     $tgl_v1 = substr($v, 0, 10);
                     $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v1);
-                    $tgl_trx = $tgl_v = (String) $tgl_create->format('d/m/Y');
+                    $tgl_v = (String) $tgl_create->format('d/m/Y');
+                    $tgl_trx = $tgl_v;
                     $new_dir[$tgl_v][] = $v;
                     $intval_dir_in = intval($intval_v) + 60;
                     $type_trx = "I";
@@ -742,19 +760,20 @@ class ManualSendController extends BaseController {
                         }
                         $intval_dir_in = intval($intval_v) + 60;
 //                            }
+                        $tgl_trx = $tgl_v;
                     } elseif ($type == 'I') {
                         //IN
-                        if (intval($intval_v) >= $intval_dir_in) {
-                            if (empty($new_dir[$tgl_v])) {
-                                $new_dir[$tgl_v][] = $v;
-                            } else {
-                                $idx = count($new_dir[$tgl_v]) - 1;
-                                $new_dir[$tgl_v][] = $v;
-                            }
-                            $intval_dir_in = intval($intval_v) + 60;
+//                        if (intval($intval_v) >= $intval_dir_in) {
+                        if (empty($new_dir[$tgl_v])) {
+                            $new_dir[$tgl_v][] = $v;
                         } else {
-                            
+                            $idx = count($new_dir[$tgl_v]) - 1;
+                            $new_dir[$tgl_v][] = $v;
                         }
+                        $intval_dir_in = intval($intval_v) + 60;
+//                        } else {
+//                            
+//                        }
                         $tgl_trx = $tgl_v;
                     }
                 } else {
@@ -772,6 +791,7 @@ class ManualSendController extends BaseController {
                         }
 
                         $intval_dir_in = intval($intval_v) + 60;
+                        $tgl_trx = $tgl_v;
                     } elseif ($type == 'I') {
                         //IN
                         $new_dir[$tgl_v][] = $v;
@@ -784,6 +804,8 @@ class ManualSendController extends BaseController {
             }
             $swipetime[$personid] = $new_dir;
         }
+        
+//        dd($swipetime);
 
         $list_workdays = $this->list_of_working_days($startdate_ori, $enddate_ori);
         $workdays_keys = array_keys($list_workdays);
@@ -795,7 +817,11 @@ class ManualSendController extends BaseController {
                     $attd[$tgl] = $att;
                 }
             }
-            $new_data[$personid]->trx = $attd;
+            if (empty($attd)) {
+                unset($new_data[$personid]);
+            } else {
+                $new_data[$personid]->trx = $attd;
+            }
         }
 
         if (!$new_data || (count($new_data) < 1)) {
@@ -819,6 +845,10 @@ class ManualSendController extends BaseController {
             foreach ($new_data as $dt_attendance) {
 //                $att['MANDT'] = '';
                 $attd = $dt_attendance->trx;
+                $worker_id = $dt_attendance->worker_id;
+                $exp_nik = explode('/', $worker_id);
+                $nik = end($exp_nik);
+                $nik_padded = str_pad($nik, 6, "0", STR_PAD_LEFT);
                 foreach ($attd as $tgl => $in_out) {
 //                            }
                     foreach ($in_out as $detail) {
@@ -828,7 +858,9 @@ class ManualSendController extends BaseController {
                         $att['SOURCE'] = "D";
                         $type = substr($detail, -1);
                         $timestamp = substr($detail, 0, -1);
-                        $record_id = str_replace(['-', ':', ' '], '', substr($timestamp, 2));
+                        $timestamp_without_second = substr($detail, 2, -1);
+                        $timestamp_without_second_cleaned = str_replace(['-', ':', ' '], '', $timestamp_without_second); //10 chars
+                        $record_id = $timestamp_without_second_cleaned . $nik_padded; //18 chars
                         $att['RECORD_ID'] = $record_id;
                         $att_time = explode(" ", $timestamp);
 //                $att['SDATE'] = str_replace("-","",$att_time[0]);
@@ -867,6 +899,9 @@ class ManualSendController extends BaseController {
             }
             $response2 = send_time_attendance_to_cpi($dtsent, $prfnr_list[0], true);
             if (empty($response2['feedback']['ERROR'])) {
+                foreach ($dtsent1 as $oksent) {
+                    $delivered_ids[] = $oksent['RECORD_ID'];
+                }
                 $res[] = $response2;
             } else {
                 $error_count[] = $response2['feedback']['ERROR'];
@@ -887,23 +922,31 @@ class ManualSendController extends BaseController {
                     )
                 ]
             );
-//            $affected = DB::table('fa_accesscontrol')
-//                    ->whereIn('fa_accesscontrol_id', $updated_ids)
-//                    ->update(['sent_cpi' => 'Y', 'remark' => '']);
-//            
-//            $this->log_event($sent_data, $responses, '', 'passing_to_cpi_');
-//            if (count($error_count) > 0) {
-//                $responses['status'] = 'fail';
-//                foreach ($error_count as $err) {
-//                    foreach ($err as $derr) {
-//                        $affected = DB::table('fa_accesscontrol')
-//                                ->where('firstname', $derr['EMPNR'])
-//                                ->where('alarmtime', "$derr[SDATE] $derr[STIME]")
-//                                ->update(['sent_cpi' => 'F', 'remark' => $derr['REMARK']]);
-//                    }
-//                }
-//                $this->log_event($sent_data, $responses, '', 'resend_to_cpi_button');
-//            }
+//            dd($delivered_ids);
+            foreach ($delivered_ids as $dt_ids) {
+                $nik_padded = substr($dt_ids, -6);
+                $nik = trim($nik_padded, "0");
+                $time_trx = substr($dt_ids, 0, 12);
+//                echo "$dt_ids -> $nik_padded > $nik  >> $time_trx \n";
+                DB::table('fa_accesscontrol')
+                        ->whereRaw("TO_CHAR(alarmtime,'YYMMDDHH24MISS') ='$time_trx'")
+                        ->whereRaw("firstname LIKE '%$nik'")
+                        ->update(['sent_cpi' => 'Y']);
+            }
+            
+            $this->log_event($sent_data, $responses, '', 'passing_to_cpi_');
+            if (count($error_count) > 0) {
+                $responses['status'] = 'fail';
+                foreach ($error_count as $err) {
+                    foreach ($err as $derr) {
+                        $affected = DB::table('fa_accesscontrol')
+                                ->where('firstname', $derr['EMPNR'])
+                                ->where('alarmtime', "$derr[SDATE] $derr[STIME]")
+                                ->update(['sent_cpi' => 'F', 'remark' => $derr['REMARK']]);
+                    }
+                }
+                $this->log_event($sent_data, $responses, '', 'resend_to_cpi_button');
+            }
         }
         return $responses;
     }
