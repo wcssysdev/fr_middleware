@@ -756,7 +756,7 @@ class ManualSendController extends BaseController {
                             $new_dir[$tgl_trx][] = $v;
                         } else {
                             $idx = count($new_dir[$tgl_trx]) - 1;
-                            $new_dir[$tgl_trx][$idx] = $v;
+                            $new_dir[$tgl_trx][] = $v;
                         }
                         $intval_dir_in = intval($intval_v) + 60;
 //                            }
@@ -823,6 +823,8 @@ class ManualSendController extends BaseController {
                 $new_data[$personid]->trx = $attd;
             }
         }
+        
+//        dd($new_data);
 
         if (!$new_data || (count($new_data) < 1)) {
             $responses = array(
