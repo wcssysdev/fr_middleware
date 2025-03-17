@@ -29,12 +29,12 @@ class FaceApiController extends BaseController {
      * @return \Illuminate\Http\Response
      */
     public function keep_alive(Request $request) {
-  /*       $zone = config('face.API_ZONE');
-        if ($zone == 'MY') {
-            date_default_timezone_set('Asia/Kuala_Lumpur');
-        } else {
-            date_default_timezone_set('Asia/Jakarta');
-        } */
+        /*       $zone = config('face.API_ZONE');
+          if ($zone == 'MY') {
+          date_default_timezone_set('Asia/Kuala_Lumpur');
+          } else {
+          date_default_timezone_set('Asia/Jakarta');
+          } */
         $report_setting = DB::table('fa_setting')->latest('fa_setting_id')->first();
         $ip_server = $report_setting->ip_server_fr;
         $ops_unit = $report_setting->unit_name;
@@ -139,7 +139,7 @@ class FaceApiController extends BaseController {
                                  */
                                 if (strlen($dt_att['firstName']) > 30) {
                                     continue;
-                                }                                
+                                }
                                 unset($dt_att['id']);
                                 if (strtoupper($dt_att['deviceName']) == $report_setting->ip_clock_in) {
                                     $direction = "IN";
@@ -219,7 +219,7 @@ class FaceApiController extends BaseController {
 //            }
             unset($newAccess->alarmtypename);
             unset($newAccess->captureimageurl);
-            
+
             $newAccess->accesstype = $direction;
             $newAccess->unit_name = $ops_unit;
             $newAccess->created_at = $now;
@@ -527,33 +527,47 @@ class FaceApiController extends BaseController {
         $zone = config('face.API_ZONE');
         if ($zone == 'MY') {
             date_default_timezone_set('Asia/Kuala_Lumpur');
-            $mundur_setengah_jam = "-90 minutes";
         } else {
-            $mundur_setengah_jam = "-30 minutes";
             date_default_timezone_set('Asia/Jakarta');
         }
         $report_setting = DB::table('fa_setting')->latest('fa_setting_id')->first();
         $ip_server = $report_setting->ip_server_fr;
         $ops_unit = $report_setting->unit_name;
 
-//        $strdate = "2022-11-23";
+//        dd($report_setting);
+
+        /**
+         * 2025
+         * 
+         * GET DATA FROM [Day -1]
+         * example Today : 2025-03-13
+         * 
+         * meaning will get data  [ Before << 2025-03-13 << After]
+         * 
+         * 1.  Before ['2025-03-12 17:00:00
+         * 2. [Day]
+         * 3. [Day + 1] :: 09:00:00
+         */
+        
         $strdate = date('Y-m-d');
-//        $enddate = $strdate;
-//        $strdate = date('Y-m-d 00:00:01');
-//        $enddate = date('Y-m-d 23:59:59');
-//        $strdate = '2022-12-07';
-//        $enddate = '2023-01-26';
+//        $strdate = '2024-12-03';
+
+        $sdate_before = date('Y-m-d H:i:s', strtotime($strdate . ' -7 hour'));
+
+        //Edate = date + 1 day 
+        $date_after = date('Y-m-d', strtotime($strdate . ' +1 day'));
+        $edate_after = "$date_after 09:00:00";
+//        dd([$sdate_before,$date_after,$edate_after]);
         $data = DB::table('fa_accesscontrol')
-                ->select('fa_accesscontrol_id', 'devicecode', 'devicename', 'channelid', 'channelname', 'alarmtypeid', 'personid', 'firstname', 'lastname', 'alarmtime', 'accesstype', 'unit_name')
-                ->where(function ($query) use ($strdate) {
-                    $query->whereRaw("to_char(alarmtime::date, 'YYYY-MM-DD') = '$strdate'");
-                })
-                ->whereIn('sent_cpi', ['F', 'N'])
-//                ->where('sent_cpi', '!=', 'F')
-                ->offset(0)
-                ->orderBy('alarmtime', 'asc')
-                ->limit(200)
-                ->get();
+                        ->select('alarmtime', 'fa_accesscontrol.accesstype', 'fa_accesscontrol.personid', 'fa_accesscontrol.firstname', 'fa_person.orgcode', 'fa_person.orgname')
+                        ->join('fa_person', 'fa_person.firstname', '=', 'fa_accesscontrol.firstname')
+                        ->where(function ($query) use ($sdate_before, $edate_after) {
+                            $query->where('alarmtime', '>', $sdate_before);
+                            $query->where('alarmtime', '<', $edate_after);
+                        })
+//                        ->where('fa_accesscontrol.firstname', '=', '1LMP/IOI/0721/29144')
+                        ->whereIn('sent_cpi', ['F', 'N'])
+                        ->orderBy('alarmtime', 'asc')->get();
         $arr_data = $data->toArray();
         if (!$data || (count($arr_data) < 1)) {
             $responses = array(
@@ -568,34 +582,175 @@ class FaceApiController extends BaseController {
             $this->log_event([], $responses, '', 'passing_to_cpi_oto');
         } else {
             //dd($arr_data);
+            $swipetime = [];
+            $new_data = [];
+            $format = 'Y-m-d H:i:s';
 
-            $sent_data = [];
+            foreach ($arr_data as $dt_access) {
+                if (empty($new_data[$dt_access->personid])) {
+                    $new_data[$dt_access->personid] = new \stdClass();
+                    $new_data[$dt_access->personid]->orgname = $dt_access->orgname;
+                    $new_data[$dt_access->personid]->orgcode = $dt_access->orgcode;
+                    $new_data[$dt_access->personid]->nama_personnel = $dt_access->personid;
+                    $new_data[$dt_access->personid]->worker_id = $dt_access->firstname;
+                }
+                if ($dt_access->accesstype == "OUT") {
+                    $type = "O";
+                } else {
+                    $type = "I";
+                }
+                $date_swipetime = $dt_access->alarmtime . $type;
+                $swipetime[$dt_access->personid][] = $date_swipetime;
+            }
+
+//        dd($swipetime);
+            foreach ($swipetime as $personid => $direct) {
+                /**
+                 * Data dengan selisih kurang dari 1 menit, dianggap duplikat
+                 */
+                $dir_in = $direct;
+                $intval_dir_in = 0;
+                $time_dir_in = "";
+                $tgl_trx = "";
+                $type_trx = "";
+                $new_dir = [];
+                foreach ($dir_in as $k => $v) {
+                    $type = substr($v, -1);
+                    $v_dir = trim(substr($v, 0, -1));
+
+                    $intval_v = preg_replace('/[^0-9]/', '', $v_dir);
+//                    print_r($intval_v);
+//                    echo "$v";
+//                    echo "\n";
+                    if ($k < 1 && $type == "O") {
+                        continue;
+                    }
+                    if ($k < 1 && $type == "I") {
+                        $tgl_v1 = substr($v, 0, 10);
+                        $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v1);
+                        $tgl_v = (String) $tgl_create->format('d/m/Y');
+                        $tgl_trx = $tgl_v;
+                        $new_dir[$tgl_v][] = $v;
+                        $intval_dir_in = intval($intval_v) + 60;
+                        $type_trx = "I";
+                        continue;
+                    }
+
+                    if ($type_trx == $type) {
+                        $tgl_v1 = substr($v, 0, 10);
+                        $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v1);
+                        $tgl_v = (String) $tgl_create->format('d/m/Y');
+                        if ($type == 'O') {
+                            //OUT
+//                            if (intval($intval_v) >= $intval_dir_in) {
+                            if (empty($new_dir[$tgl_trx])) {
+                                $new_dir[$tgl_trx][] = $v;
+                            } else {
+                                $idx = count($new_dir[$tgl_trx]) - 1;
+                                $new_dir[$tgl_trx][] = $v;
+                            }
+                            $intval_dir_in = intval($intval_v) + 60;
+//                            }
+                            $tgl_trx = $tgl_v;
+                        } elseif ($type == 'I') {
+                            //IN
+//                        if (intval($intval_v) >= $intval_dir_in) {
+                            if (empty($new_dir[$tgl_v])) {
+                                $new_dir[$tgl_v][] = $v;
+                            } else {
+                                $idx = count($new_dir[$tgl_v]) - 1;
+                                $new_dir[$tgl_v][] = $v;
+                            }
+                            $intval_dir_in = intval($intval_v) + 60;
+//                        } else {
+//                            
+//                        }
+                            $tgl_trx = $tgl_v;
+                        }
+                    } else {
+                        $tgl_v1 = substr($v, 0, 10);
+                        $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v1);
+                        $tgl_v = (String) $tgl_create->format('d/m/Y');
+                        if ($type == 'O') {
+                            //OUT
+
+                            if (empty($new_dir[$tgl_trx])) {
+                                $new_dir[$tgl_trx][] = $v;
+                            } else {
+                                $idx = count($new_dir[$tgl_trx]) - 1;
+                                $new_dir[$tgl_trx][] = $v;
+                            }
+
+                            $intval_dir_in = intval($intval_v) + 60;
+                            $tgl_trx = $tgl_v;
+                        } elseif ($type == 'I') {
+                            //IN
+                            $new_dir[$tgl_v][] = $v;
+                            $tgl_trx = $tgl_v;
+                            $time_dir_in = $v;
+                            $intval_dir_in = intval($intval_v) + 60;
+                        }
+                        $type_trx = $type;
+                    }
+                }
+                $swipetime[$personid] = $new_dir;
+            }
+
+//        dd($swipetime);
+
+            $strdate_miring = date('d/m/Y',strtotime($strdate));
+            
+            $workdays_keys = [$strdate_miring];
+            foreach ($swipetime as $personid => $direct) {
+
+                $attd = [];
+                foreach ($direct as $tgl => $att) {
+                    if (in_array($tgl, $workdays_keys)) {
+                        $attd[$tgl] = $att;
+                    }
+                }
+                if (empty($attd)) {
+                    unset($new_data[$personid]);
+                } else {
+                    $new_data[$personid]->trx = $attd;
+                }
+            }
+//            dd($new_data);
+       $sent_data = [];
             $updated_ids = [];
 
             $list_prfnr = [];
-            foreach ($arr_data as $dt_attendance) {
-                $updated_ids[] = $dt_attendance->fa_accesscontrol_id;
+            foreach ($new_data as $dt_attendance) {
 //                $att['MANDT'] = '';
-                $att['RECORD_ID'] = $dt_attendance->fa_accesscontrol_id;
-                $att['PRFNR'] = $ops_unit;
-                $att['EMPNR'] = $dt_attendance->firstname;
-                $att['SOURCE'] = "D";
+                $attd = $dt_attendance->trx;
+                $worker_id = $dt_attendance->worker_id;
+                $exp_nik = explode('/', $worker_id);
+                $nik = end($exp_nik);
+                $nik_padded = str_pad($nik, 6, "0", STR_PAD_LEFT);
+                foreach ($attd as $tgl => $in_out) {
 //                            }
-                $att_time = explode(" ", $dt_attendance->alarmtime);
+                    foreach ($in_out as $detail) {
+                        $att = [];
+                        $att['PRFNR'] = $ops_unit;
+                        $att['EMPNR'] = $dt_attendance->worker_id;
+                        $att['SOURCE'] = "D";
+                        $type = substr($detail, -1);
+                        $timestamp = substr($detail, 0, -1);
+                        $timestamp_without_second = substr($detail, 2, -1);
+                        $timestamp_without_second_cleaned = str_replace(['-', ':', ' '], '', $timestamp_without_second); //10 chars
+                        $record_id = $timestamp_without_second_cleaned . $nik_padded; //18 chars
+                        $att['RECORD_ID'] = $record_id;
+                        $att_time = explode(" ", $timestamp);
 //                $att['SDATE'] = str_replace("-","",$att_time[0]);
-                $att['SDATE'] = $att_time[0];
+                        $att['SDATE'] = $att_time[0];
 //                $att['STIME'] = str_replace(":","",$att_time[1]);
-                $att['STIME'] = $att_time[1];
+                        $att['STIME'] = $att_time[1];
 
-                if ($dt_attendance->accesstype == "OUT") {
-                    $att['TYPE'] = "O";
-                } else {
-                    $att['TYPE'] = "I";
-                }
-                $att['ERNAM'] = "";
-                $att['ERDAT'] = "";
-                $att['ERZET'] = "";
-                $att['REMARK'] = "";
+                        $att['TYPE'] = "$type";
+                        $att['ERNAM'] = "";
+                        $att['ERDAT'] = "";
+                        $att['ERZET'] = "";
+                        $att['REMARK'] = "";
 //                $att['AENAM'] = "";
 //                $att['AEDAT'] = "";
 //                $att['AEZET'] = "";
@@ -604,7 +759,9 @@ class FaceApiController extends BaseController {
 //                $att['APZET'] = "";
 //                $att['DELETED'] = "";
 
-                $sent_data[$att['PRFNR']][] = $att;
+                        $sent_data[$att['PRFNR']][] = $att;
+                    }
+                }
             }
 
 //            dd($sent_data);
@@ -810,9 +967,16 @@ class FaceApiController extends BaseController {
                 ]
             );
 
-            $affected = DB::table('fa_accesscontrol')
-                    ->whereIn('fa_accesscontrol_id', $updated_ids)
-                    ->update(['sent_cpi' => 'Y']);
+            foreach ($delivered_ids as $dt_ids) {
+                $nik_padded = substr($dt_ids, -6);
+                $nik = trim($nik_padded, "0");
+                $time_trx = substr($dt_ids, 0, 12);
+//                echo "$dt_ids -> $nik_padded > $nik  >> $time_trx \n";
+                DB::table('fa_accesscontrol')
+                        ->whereRaw("TO_CHAR(alarmtime,'YYMMDDHH24MISS') ='$time_trx'")
+                        ->whereRaw("firstname LIKE '%$nik'")
+                        ->update(['sent_cpi' => 'Y']);
+            }
             $this->log_event($sent_data, $responses, '', 'passing_to_cpi_oto');
             if (count($error_count) > 0) {
                 $responses['status'] = 'fail';
@@ -836,5 +1000,4 @@ class FaceApiController extends BaseController {
         return redirect()->route('products.index')
                         ->with('success', 'Product deleted successfully');
     }
-
 }

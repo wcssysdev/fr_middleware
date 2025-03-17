@@ -267,10 +267,13 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="page-footer">
-        <div class="page-footer-inner">
-            <a> FaceApi IOI V 3.4.0.0 ((20250313))</a>
+        <div class="page-footer">
+            <div class="page-footer-inner">
+                <a> FaceApi IOI V 3.4.0.0 (20250317)</a>
+            </div>
+            <div class="scroll-to-top">
+                <i class="icon-arrow-up"></i>
+            </div>
         </div>
         <div class="scroll-to-top">
             <i class="icon-arrow-up"></i>

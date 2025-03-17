@@ -268,7 +268,7 @@
 
         <div class="page-footer">
             <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.4.0.0 ((20250313))</a>
+                <a> FaceApi IOI V 3.4.0.0 (20250317)</a>
             </div>
             <div class="scroll-to-top">
                 <i class="icon-arrow-up"></i>
@@ -338,7 +338,7 @@ $(document).ready(function ()
                 type: "POST",
                 url: "sendsap.transfer",
                 data: {type: 'pull', date_start: $('#startdate').val(), date_end: $('#enddate').val()},
-                dataType: 'text/json',
+                dataType: 'json',
                 beforeSend: function () {
                     $('#spinner-div').show();
                 },
@@ -360,7 +360,7 @@ $(document).ready(function ()
                 type: "POST",
                 url: "sendsap.transfer",
                 data: {type: 'push', date_start: $('#startdate').val(), date_end: $('#enddate').val()},
-                dataType: 'text/json',
+                dataType: 'json',
                 beforeSend: function () {
                     $('#spinner-div').show();
                 },

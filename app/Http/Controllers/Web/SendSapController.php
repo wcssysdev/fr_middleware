@@ -37,20 +37,19 @@ class SendSapController extends BaseController {
         }
         $setting = Setting::orderBy('fa_setting_id', 'desc')->first();
 
-		//var_dump([$request->type]);die();
+        //var_dump([$request->type]);die();
         if (!empty($request->type) && $request->type == 'resend') {
-           // $this->keep_alive($setting);
+            // $this->keep_alive($setting);
             $this->resend_to_cpi($request, $setting);
-        }elseif (!empty($request->type) && $request->type == 'pull') {
+        } elseif (!empty($request->type) && $request->type == 'pull') {
             $this->keep_alive($setting);
-			//	var_dump(["ok"]);die();
+            //	var_dump(["ok"]);die();
             $this->crawling_passing_attendance($request, $setting);
-			
-        }elseif (!empty($request->type) && $request->type == 'push') {
-           // $this->keep_alive($setting);
+        } elseif (!empty($request->type) && $request->type == 'push') {
+            // $this->keep_alive($setting);
             $this->passing_to_cpi($request, $setting);
-        }else {
-          //  $this->keep_alive($setting);
+        } else {
+            //  $this->keep_alive($setting);
             $this->crawling_passing_attendance($request, $setting);
             $this->passing_to_cpi($request, $setting);
         }
@@ -78,15 +77,15 @@ class SendSapController extends BaseController {
         $isi_token = Storage::disk('local')->get('_token.txt');
         if ($isi_token) {
             $exploded_isi_token = explode("|", $isi_token);
-			//var_dump($exploded_isi_token);die();
+            //var_dump($exploded_isi_token);die();
             if (count($exploded_isi_token) >= 3) {
                 if ($exploded_isi_token[0] == date('Ymd')) {
                     $_token = trim($exploded_isi_token[2]);
 
                     //Access IN
                     $response_fr = $this->crawling_face_recognition_in($request, $_token, $ip_server, $report_setting);
-					
-					//echo json_encode($response_fr);die();
+
+                    //echo json_encode($response_fr);die();
                     if ($response_fr['status'] == 1) {
 //                        dd($response_fr);
                         $list_attendance = $response_fr['data']['pageData'];
@@ -115,9 +114,9 @@ class SendSapController extends BaseController {
                                  */
                                 if (strlen($dt_att['firstName']) > 30) {
                                     continue;
-                                }        
-								
-								$att['REMARK'] = "";                                
+                                }
+
+                                $att['REMARK'] = "";
                                 unset($dt_att['id']);
                                 if (strtoupper($dt_att['deviceName']) == $report_setting->ip_clock_in) {
                                     $direction = "IN";
@@ -187,11 +186,11 @@ class SendSapController extends BaseController {
          */
         //date_default_timezone_set('GMT');
         $zone = config('face.API_ZONE');
-/*         if ($zone == 'MY') {
-            date_default_timezone_set('Asia/Kuala_Lumpur');
-        } else {
-            date_default_timezone_set('Asia/Jakarta');
-        } */
+        /*         if ($zone == 'MY') {
+          date_default_timezone_set('Asia/Kuala_Lumpur');
+          } else {
+          date_default_timezone_set('Asia/Jakarta');
+          } */
         $date_start = \DateTime::createFromFormat('Y-m-d H:i A', "$date_start 01:01 am");
         $date_end = \DateTime::createFromFormat('Y-m-d H:i A', "$date_end 11:59 pm");
         $timestamp_start = $date_start->format('U');
@@ -433,31 +432,202 @@ class SendSapController extends BaseController {
     }
 
     protected function passing_to_cpi($request, $report_setting) {
+        /**
+         * Digunakan schema baru
+         * 1. cari data IN untuk tanggal sebelum range
+         * 2. cari all data untuk tanggal dalam range
+         * 3. cari data OUT untuk tanggal setelah range
+         */
         $ops_unit = $report_setting->unit_name;
-        $date_start = $request->get('date_start');
-        $date_end = $request->get('date_end');
 
-        $strdate = "$date_start 00:00:01";
-        $enddate = "$date_end 23:59:59";
-//        dd("$strdate $enddate");
-        $data = DB::table('fa_accesscontrol')
-                ->select('fa_accesscontrol_id', 'devicecode', 'devicename', 'channelid', 'channelname', 'alarmtypeid', 'personid', 'firstname', 'lastname', 'alarmtime', 'accesstype', 'unit_name')
-                ->where(function ($query) use ($strdate, $enddate) {
-                    $query->where('alarmtime', '>=', $strdate);
-                    $query->where('alarmtime', '<=', $enddate);
-                })
-                ->where('sent_cpi', '=', 'N')
-                ->offset(0)
-                ->orderBy('alarmtime', 'asc')
-               // ->limit(200)
-                ->get();
-        $arr_data = $data->toArray();
-//        
-//        $strdata = '[{"fa_accesscontrol_id":1525,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"SUPRIADI","firstname":"1SHL\/IOI\/0412\/6983","lastname":"","alarmtime":"2023-01-29 00:00:20","accesstype":"IN","unit_name":"POM SAKILAN"},{"fa_accesscontrol_id":1524,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"MUHAMMADAKMALMANDONG","firstname":"1SHL\/IOI\/0811\/6951","lastname":"","alarmtime":"2023-01-29 00:00:31","accesstype":"IN","unit_name":"POM SAKILAN"},{"fa_accesscontrol_id":1523,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"SIBATANTILI","firstname":"1SHL\/IOI\/0822\/35295","lastname":"","alarmtime":"2023-01-29 00:50:50","accesstype":"IN","unit_name":"POM SAKILAN"},{"fa_accesscontrol_id":1522,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"IDRUSHAFID","firstname":"1SHL\/IOI\/0113\/6914","lastname":"","alarmtime":"2023-01-29 00:53:49","accesstype":"IN","unit_name":"POM SAKILAN"},{"fa_accesscontrol_id":1521,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"BAHARIBINBADDU","firstname":"1SHL\/IOI\/0409\/6899","lastname":"","alarmtime":"2023-01-29 00:55:36","accesstype":"IN","unit_name":"POM SAKILAN"},{"fa_accesscontrol_id":1520,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"RAHMATBINSAMSUL","firstname":"1SHL\/IOI\/0417\/6971","lastname":"","alarmtime":"2023-01-29 00:59:12","accesstype":"IN","unit_name":"POM SAKILAN"},{"fa_accesscontrol_id":1519,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"MUHAMMADRISALBINDARWIS","firstname":"1SHL\/IOI\/0715\/6953","lastname":"","alarmtime":"2023-01-29 01:01:33","accesstype":"IN","unit_name":"POM SAKILAN"},{"fa_accesscontrol_id":1518,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"MOHAMMADASRULBINAMIR","firstname":"1SHL\/IOI\/0117\/6936","lastname":"","alarmtime":"2023-01-29 01:02:36","accesstype":"IN","unit_name":"POM SAKILAN"},{"fa_accesscontrol_id":1517,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"MOHAMADHAKEMANBINUNDDIN","firstname":"1SHL\/IOI\/1218\/6935","lastname":"","alarmtime":"2023-01-29 01:03:30","accesstype":"IN","unit_name":"POM SAKILAN"},{"fa_accesscontrol_id":1516,"devicecode":"1000003","devicename":"10.10.126.23","channelid":"1000003$7$0$0","channelname":"Door1","alarmtypeid":"600005","personid":"MOHDSYAHEFFENDI","firstname":"1SHL\/IOI\/0817\/6948","lastname":"","alarmtime":"2023-01-29 01:04:09","accesstype":"IN","unit_name":"POM SAKILAN"}]';
-//        $arr_data = json_decode($strdata);
-//        $data = "ok";
-//        dd($arr_data);
-        if (!$data || (count($arr_data) < 1)) {
+        $startdate_ori = $sdate = $request->get('date_start');
+        $enddate_ori = $enddate = $request->get('date_end');
+        $enddate = "$enddate_ori 23:59:59";
+
+        $sdate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -7 hour'));
+        $edate_before = date('Y-m-d H:i:s', strtotime($startdate_ori . ' -3 second'));
+
+        //Edate = date + 1 day 
+        $date_after = date('Y-m-d', strtotime($enddate_ori . ' +1 day'));
+        $sdate_after = date('Y-m-d H:i:s', strtotime($date_after . ' -3 second'));
+        $edate_after = "$date_after 09:00:00";
+
+//dd([$sdate_before,$edate_before,$sdate_after,$edate_after]);
+        $arr_data = DB::table('fa_accesscontrol')
+                        ->select('alarmtime', 'fa_accesscontrol.accesstype', 'fa_accesscontrol.personid', 'fa_accesscontrol.firstname', 'fa_person.orgcode', 'fa_person.orgname')
+                        ->join('fa_person', 'fa_person.firstname', '=', 'fa_accesscontrol.firstname')
+                        ->where(function ($query) use ($sdate_before, $edate_before, $sdate_after, $edate_after) {
+                            $query->orWhere(function ($query3) use ($sdate_before, $edate_before) {
+                                $query3->where('alarmtime', '>=', $sdate_before);
+                                $query3->where('alarmtime', '<=', $edate_before);
+//                                $query3->where('fa_accesscontrol.accesstype', '=', 'IN');
+                            });
+                            $query->orWhere(function ($query5) use ($edate_before, $sdate_after) {
+                                $query5->where('alarmtime', '>=', $edate_before);
+                                $query5->where('alarmtime', '<=', $sdate_after);
+                            });
+                            $query->orWhere(function ($query4) use ($sdate_after, $edate_after) {
+                                $query4->where('alarmtime', '>=', $sdate_after);
+                                $query4->where('alarmtime', '<=', $edate_after);
+//                                $query4->where('fa_accesscontrol.accesstype', '=', 'OUT');
+                            });
+                        })
+                        ->where('sent_cpi', '=', 'N')
+//                        ->where('fa_accesscontrol.personid', '=', 'AHMADDEMMA')
+                        ->orderBy('personid', 'asc')
+                        ->orderBy('alarmtime', 'asc')
+                        ->orderBy('accesstype', 'asc')->get();
+        if (!$arr_data || count($arr_data) < 1) {
+            $responses = array(
+                'status' => 'success',
+                'data' => [
+                    array(
+                        'code' => 200,
+                        'message' => 'There is no new data to transfer.'
+                    )
+                ]
+            );
+            return $responses;
+        }
+//        dd(($arr_data));
+        $swipetime = [];
+        $new_data = [];
+        $format = 'Y-m-d H:i:s';
+
+        foreach ($arr_data as $dt_access) {
+            if (empty($new_data[$dt_access->personid])) {
+                $new_data[$dt_access->personid] = new \stdClass();
+                $new_data[$dt_access->personid]->orgname = $dt_access->orgname;
+                $new_data[$dt_access->personid]->orgcode = $dt_access->orgcode;
+                $new_data[$dt_access->personid]->nama_personnel = $dt_access->personid;
+                $new_data[$dt_access->personid]->worker_id = $dt_access->firstname;
+            }
+            if ($dt_access->accesstype == "OUT") {
+                $type = "O";
+            } else {
+                $type = "I";
+            }
+            $date_swipetime = $dt_access->alarmtime . $type;
+            $swipetime[$dt_access->personid][] = $date_swipetime;
+        }
+
+//        dd($new_data);
+//        dd($swipetime);
+
+        foreach ($swipetime as $personid => $direct) {
+            /**
+             * Data dengan selisih kurang dari 1 menit, dianggap duplikat
+             */
+            $dir_in = $direct;
+            $intval_dir_in = 0;
+            $time_dir_in = "";
+            $tgl_trx = "";
+            $type_trx = "";
+            $new_dir = [];
+            foreach ($dir_in as $k => $v) {
+                $type = substr($v, -1);
+                $v_dir = trim(substr($v, 0, -1));
+
+                $intval_v = preg_replace('/[^0-9]/', '', $v_dir);
+//                    print_r($intval_v);
+//                    echo "$v";
+//                    echo "\n";
+                if ($k < 1 && $type == "O") {
+                    continue;
+                }
+                if ($k < 1 && $type == "I") {
+                    $tgl_v1 = substr($v, 0, 10);
+                    $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v1);
+                    $tgl_v = (String) $tgl_create->format('d/m/Y');
+                    $tgl_trx = $tgl_v;
+                    $new_dir[$tgl_v][] = $v;
+                    $intval_dir_in = intval($intval_v) + 60;
+                    $type_trx = "I";
+                    continue;
+                }
+
+                if ($type_trx == $type) {
+                    $tgl_v1 = substr($v, 0, 10);
+                    $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v1);
+                    $tgl_v = (String) $tgl_create->format('d/m/Y');
+                    if ($type == 'O') {
+                        //OUT
+//                            if (intval($intval_v) >= $intval_dir_in) {
+                        if (empty($new_dir[$tgl_trx])) {
+                            $new_dir[$tgl_trx][] = $v;
+                        } else {
+                            $idx = count($new_dir[$tgl_trx]) - 1;
+                            $new_dir[$tgl_trx][] = $v;
+                        }
+                        $intval_dir_in = intval($intval_v) + 60;
+//                            }
+                        $tgl_trx = $tgl_v;
+                    } elseif ($type == 'I') {
+                        //IN
+//                        if (intval($intval_v) >= $intval_dir_in) {
+                        if (empty($new_dir[$tgl_v])) {
+                            $new_dir[$tgl_v][] = $v;
+                        } else {
+                            $idx = count($new_dir[$tgl_v]) - 1;
+                            $new_dir[$tgl_v][] = $v;
+                        }
+                        $intval_dir_in = intval($intval_v) + 60;
+//                        } else {
+//                            
+//                        }
+                        $tgl_trx = $tgl_v;
+                    }
+                } else {
+                    $tgl_v1 = substr($v, 0, 10);
+                    $tgl_create = \DateTimeImmutable::createFromFormat("Y-m-d", $tgl_v1);
+                    $tgl_v = (String) $tgl_create->format('d/m/Y');
+                    if ($type == 'O') {
+                        //OUT
+
+                        if (empty($new_dir[$tgl_trx])) {
+                            $new_dir[$tgl_trx][] = $v;
+                        } else {
+                            $idx = count($new_dir[$tgl_trx]) - 1;
+                            $new_dir[$tgl_trx][] = $v;
+                        }
+
+                        $intval_dir_in = intval($intval_v) + 60;
+                        $tgl_trx = $tgl_v;
+                    } elseif ($type == 'I') {
+                        //IN
+                        $new_dir[$tgl_v][] = $v;
+                        $tgl_trx = $tgl_v;
+                        $time_dir_in = $v;
+                        $intval_dir_in = intval($intval_v) + 60;
+                    }
+                    $type_trx = $type;
+                }
+            }
+            $swipetime[$personid] = $new_dir;
+        }
+
+//dd(($swipetime));
+
+        $list_workdays = $this->list_of_working_days($startdate_ori, $enddate_ori);
+        $workdays_keys = array_keys($list_workdays);
+        foreach ($swipetime as $personid => $direct) {
+
+            $attd = [];
+            foreach ($direct as $tgl => $att) {
+                if (in_array($tgl, $workdays_keys)) {
+                    $attd[$tgl] = $att;
+                }
+            }
+            if (empty($attd)) {
+                unset($new_data[$personid]);
+            } else {
+                $new_data[$personid]->trx = $attd;
+            }
+        }
+
+
+//        dd($new_data);
+        if (!$new_data || (count($new_data) < 1)) {
             $responses = array(
                 'status' => 'success',
                 'data' => [
@@ -475,29 +645,36 @@ class SendSapController extends BaseController {
             $updated_ids = [];
 
             $list_prfnr = [];
-            foreach ($arr_data as $dt_attendance) {
-                $updated_ids[] = $dt_attendance->fa_accesscontrol_id;
+            foreach ($new_data as $dt_attendance) {
 //                $att['MANDT'] = '';
-                $att['RECORD_ID'] = $dt_attendance->fa_accesscontrol_id;
-                $att['PRFNR'] = $ops_unit;
-                $att['EMPNR'] = $dt_attendance->firstname;
-                $att['SOURCE'] = "D";
+                $attd = $dt_attendance->trx;
+                $worker_id = $dt_attendance->worker_id;
+                $exp_nik = explode('/', $worker_id);
+                $nik = end($exp_nik);
+                $nik_padded = str_pad($nik, 6, "0", STR_PAD_LEFT);
+                foreach ($attd as $tgl => $in_out) {
 //                            }
-                $att_time = explode(" ", $dt_attendance->alarmtime);
-//                $att['SDATE'] = str_replace("-","",$att_time[0]);
-                $att['SDATE'] = $att_time[0];
-//                $att['STIME'] = str_replace(":","",$att_time[1]);
-                $att['STIME'] = $att_time[1];
+                    foreach ($in_out as $detail) {
+                        $att = [];
+                        $att['PRFNR'] = $ops_unit;
+                        $att['EMPNR'] = $worker_id;
+                        $att['SOURCE'] = "D";
+                        $type = substr($detail, -1);
+                        $timestamp = substr($detail, 0, -1);
+                        $timestamp_without_second = substr($detail, 2, -1);
+                        $timestamp_without_second_cleaned = str_replace(['-', ':', ' '], '', $timestamp_without_second); //10 chars
+                        $record_id = $timestamp_without_second_cleaned . $nik_padded; //18 chars
+                        $att['RECORD_ID'] = $record_id;
+                        $att_time = explode(" ", $timestamp);
 
-                if ($dt_attendance->accesstype == "OUT") {
-                    $att['TYPE'] = "O";
-                } else {
-                    $att['TYPE'] = "I";
-                }
-                $att['ERNAM'] = "";
-                $att['ERDAT'] = "";
-                $att['ERZET'] = "";
-                $att['REMARK'] = "";
+                        $att['SDATE'] = $att_time[0];
+                        $att['STIME'] = $att_time[1];
+
+                        $att['TYPE'] = "$type";
+                        $att['ERNAM'] = "";
+                        $att['ERDAT'] = "";
+                        $att['ERZET'] = "";
+                        $att['REMARK'] = "";
 //                $att['AENAM'] = "";
 //                $att['AEDAT'] = "";
 //                $att['AEZET'] = "";
@@ -506,7 +683,9 @@ class SendSapController extends BaseController {
 //                $att['APZET'] = "";
 //                $att['DELETED'] = "";
 
-                $sent_data[$att['PRFNR']][] = $att;
+                        $sent_data[$att['PRFNR']][] = $att;
+                    }
+                }
             }
 
 //            dd($sent_data);
@@ -515,66 +694,28 @@ class SendSapController extends BaseController {
             $res = [];
             $error_count = [];
             $delivered_ids = [];
-            if (count($prfnr_list) > 1) {
-                for ($i = 0; $i < count($prfnr_list) - 1; $i++) {
-                    $dtsent1 = $sent_data[$prfnr_list[$i]];
-                    $dtsent = $dtsent1;
-                    foreach ($dtsent as $ksent => $oksent) {
-                        unset($dtsent[$ksent]['RECORD_ID']);
-                    }
-                    $response0 = send_time_attendance_to_cpi($dtsent, $prfnr_list[$i], false);
-                    if (empty($response0['feedback']['ERROR'])) {
-                        $res[] = $response0;
-                        $delivered_ids[] = $dtsent1[0]['RECORD_ID'];
-                    } else {
-                        $error_count[] = $response0['feedback']['ERROR'];
-                        $res[] = $response0;
-                        /**
-                         * Handdle error
-                         */
-                    }
-//                    echo "$i <br/>";
+
+            $dtsent1 = $sent_data[$prfnr_list[0]];
+            $dtsent = $dtsent1;
+            foreach ($dtsent as $ksent => $oksent) {
+                unset($dtsent[$ksent]['RECORD_ID']);
+            }
+            $response2 = send_time_attendance_to_cpi($dtsent, $prfnr_list[0], true);
+//                dd($response2);
+            if (empty($response2['feedback']['ERROR'])) {
+                foreach ($dtsent1 as $oksent) {
+                    $delivered_ids[] = $oksent['RECORD_ID'];
                 }
-                $dtsent1 = $sent_data[$prfnr_list[count($prfnr_list) - 1]];
-                $dtsent = $dtsent1;
-                foreach ($dtsent as $ksent => $oksent) {
-                    unset($dtsent[$ksent]['RECORD_ID']);
-                }
-                $response1 = send_time_attendance_to_cpi($dtsent, $prfnr_list[count($prfnr_list) - 1], true);
-                if (empty($response1['feedback']['ERROR'])) {
-                    $res[] = $response1;
-                    $delivered_ids[] = $dtsent1[0]['RECORD_ID'];
-                } else {
-                    $error_count[] = $response1['feedback']['ERROR'];
-                    $res[] = $response1;
-                    /**
-                     * Handdle error
-                     */
-                }
-                //  dd($response1['feedback']);                
+                $res[] = $response2;
             } else {
-                $dtsent1 = $sent_data[$prfnr_list[0]];
-//                dd($dtsent1);
-                $dtsent = $dtsent1;
-                foreach ($dtsent as $ksent => $oksent) {
-                    unset($dtsent[$ksent]['RECORD_ID']);
-                }
-                $response2 = send_time_attendance_to_cpi($dtsent, $prfnr_list[0], true);
-                if (empty($response2['feedback']['ERROR'])) {
-                    foreach ($dtsent1 as $oksent) {
-                        $delivered_ids[] = $oksent['RECORD_ID'];
-                    }
-                    $res[] = $response2;
-                } else {
-                    $error_count[] = $response2['feedback']['ERROR'];
-                    $res[] = $response2;
-                    /**
-                     * Handdle error
-                     */
-                }
-                //   dd($response2['feedback']);                
+                $error_count[] = $response2['feedback']['ERROR'];
+                $res[] = $response2;
+                /**
+                 * Handdle error
+                 */
             }
 
+//            dd($error_count);
 
             $responses = array(
                 'status' => 'success',
@@ -586,9 +727,17 @@ class SendSapController extends BaseController {
                     )
                 ]
             );
-            $affected = DB::table('fa_accesscontrol')
-                    ->whereIn('fa_accesscontrol_id', $updated_ids)
-                    ->update(['sent_cpi' => 'Y']);
+            foreach ($delivered_ids as $dt_ids) {
+                $nik_padded = substr($dt_ids, -6);
+                $nik = trim($nik_padded, "0");
+                $time_trx = substr($dt_ids, 0, 12);
+//                echo "$dt_ids -> $nik_padded > $nik  >> $time_trx \n";
+                DB::table('fa_accesscontrol')
+                        ->whereRaw("TO_CHAR(alarmtime,'YYMMDDHH24MISS') ='$time_trx'")
+                        ->whereRaw("firstname LIKE '%$nik'")
+                        ->update(['sent_cpi' => 'Y']);
+            }
+//            dd($delivered_ids);
             $this->log_event($sent_data, $responses, '', 'passing_to_cpi_oto');
             if (count($error_count) > 0) {
                 $responses['status'] = 'fail';
@@ -620,19 +769,12 @@ class SendSapController extends BaseController {
 
             if ($isi_token) {
                 $exploded_isi_token = explode("|", $isi_token);
-            //var_dump($exploded_isi_token);die();
+                //var_dump($exploded_isi_token);die();
                 if (count($exploded_isi_token) >= 3) {
                     if ($exploded_isi_token[0] == date('Ymd')) {
-//            dd($exploded_isi_token[0]);
-                        //Sudah pernah looping / pernah run authentication
-                        // do heartbeat
                         $datetimestamp = strtotime('+25 minutes', strtotime("$exploded_isi_token[0] $exploded_isi_token[1]"));
                         $is_run_auth = Storage::disk('local')->get('_run_cron.txt');
                         if ($is_run_auth == 'Y') {
-                            //Storage::disk('local')->put('_token.txt', $datetimestamp."-".strtotime('now'));
-//        $now = date('Y-m-d H:i:s');
-//        $this->log_event([], strtotime('now'), $now, 'do-auth-check');
-//                            dd([$datetimestamp,strtotime('now')]);
                             if ($datetimestamp < strtotime('now')) {
                                 $this->do_auth($ip_server);
                             } else {
@@ -654,6 +796,31 @@ class SendSapController extends BaseController {
         } else {
             $this->do_auth($ip_server);
         }
+    }
+
+    function list_of_working_days($from1, $to1) {
+//        $workingDays = [1, 2, 3, 4, 5]; # date format = N (1 = Monday, ...)
+//        $holidayDays = explode(",", config('face.HOLYDAYS')); # variable and fixed holidays
+
+        $from = new \DateTime($from1);
+        $to = new \DateTime($to1);
+        $to->modify('+1 day');
+        $interval = new \DateInterval('P1D');
+        $periods = new \DatePeriod($from, $interval, $to);
+
+        $days = 0;
+        $dates = [];
+        foreach ($periods as $period) {
+//            if (!in_array($period->format('N'), $workingDays))
+//                continue;
+//            if (in_array($period->format('Y-m-d'), $holidayDays))
+//                continue;
+//            if (in_array($period->format('*-m-d'), $holidayDays))
+//                continue;
+            $days++;
+            $dates[$period->format('d/m/Y')] = '';
+        }
+        return $dates;
     }
 
     protected function test_conn_with_auth($ip_server = null) {
@@ -723,7 +890,7 @@ class SendSapController extends BaseController {
         curl_setopt($ch_token, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch_token, CURLOPT_CUSTOMREQUEST, 'POST');
         $result_token = curl_exec($ch_token);
- //       var_dump($result_token);exit;
+        //       var_dump($result_token);exit;
 //        $httpcode_token = curl_getinfo($ch_token, CURLINFO_HTTP_CODE);
         curl_close($ch_token);
         $decoded_res_token = json_decode($result_token, 1);
@@ -805,7 +972,7 @@ class SendSapController extends BaseController {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
         $result = curl_exec($ch);
-		//var_dump($result);die();
+        //var_dump($result);die();
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         //dd($httpcode);
         curl_close($ch);
@@ -855,12 +1022,11 @@ class SendSapController extends BaseController {
 //                $direction = "IN";
 //            }
             unset($newAccess->alarmtypename);
-            unset($newAccess->captureimageurl);            
+            unset($newAccess->captureimageurl);
             $newAccess->accesstype = $direction;
             $newAccess->unit_name = $ops_unit;
             $newAccess->created_at = $now;
             $newAccess->save();
         }
     }
-
 }
