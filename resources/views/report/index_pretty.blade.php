@@ -47,93 +47,93 @@
             <div class="page-top">
             </div>
         </div>
-        <div class="clearfix"> </div>
-        <div class="page-container" style="background:#EEE;">
-            <div class="page-sidebar-wrapper">
-                <div class="page-sidebar navbar-collapse collapse">
-                    <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                        <li class="nav-item ">
-                            <a href="{{ route('webreport') }}" class="nav-link">
-                                <i class="fa fa-home"></i>
-                                <span class="title">Home</span>
-                            </a>
-                        </li>
-                        <li class="nav-item ">
-                            <a href="{{ route('group') }}" class="nav-link">
-                                <i class="fa fa-database"></i>
-                                <span class="title">Group List</span>
-                                <span class="selected"></span>
-                                <span class="arrow "></span>
-                            </a>
-                        </li>
-                        <li class="nav-item ">
-                            <a href="{{ route('person') }}" class="nav-link">
-                                <i class="fa fa-database"></i>
-                                <span class="title">Person List</span>
-                                <span class="selected"></span>
-                                <span class="arrow "></span>
-                            </a>
-                        </li>
-                        <li class="nav-item open">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="fa fa-chart-bar"></i>
-                                <span class="title">Reporting</span>
-                                <span class="selected"></span>
-                                <span class="arrow "></span>
-                            </a>
-                            <ul class="sub-menu" style="display: block;">
-                                <li class="nav-item">
-                                    <a href="{{ route('setting.index') }}" class="nav-link">
-                                        <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Setting</span>
-                                        <span class="selected"></span>
-                                        <span class="arrow "></span>
-                                    </a>
-                                </li>
-                                <li class="nav-item active">
-                                    <a href="{{ route('webreport') }}" class="nav-link">
-                                        <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Report</span>
-                                        <span class="selected"></span>
-                                        <span class="arrow "></span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('webmonthly') }}" class="nav-link">
-                                        <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Report Monthly</span>
-                                        <span class="selected"></span>
-                                        <span class="arrow "></span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('weblog') }}" class="nav-link">
-                                        <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Log</span>
-                                        <span class="selected"></span>
-                                        <span class="arrow "></span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('sendsapindex') }}" class="nav-link">
-                                        <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Get Data</span>
-                                        <span class="selected"></span>
-                                        <span class="arrow "></span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('webresend') }}" class="nav-link">
-                                        <i class="fa fa-chart-bar"></i>
-                                        <span class="title">Manual Send</span>
-                                        <span class="selected"></span>
-                                        <span class="arrow "></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+    </div>
+    <div class="clearfix"> </div>
+    <div class="page-container" style="background:#EEE;">
+        <div class="page-sidebar-wrapper">
+            <div class="page-sidebar navbar-collapse collapse">
+                <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+                    <li class="nav-item ">
+                        <a href="{{ route('webreport') }}" class="nav-link">
+                            <i class="fa fa-home"></i>
+                            <span class="title">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a href="{{ route('group') }}" class="nav-link">
+                            <i class="fa fa-database"></i>
+                            <span class="title">Group List</span>
+                            <span class="selected"></span>
+                            <span class="arrow "></span>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a href="{{ route('person') }}" class="nav-link">
+                            <i class="fa fa-database"></i>
+                            <span class="title">Person List</span>
+                            <span class="selected"></span>
+                            <span class="arrow "></span>
+                        </a>
+                    </li>
+                    <li class="nav-item open">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="fa fa-chart-bar"></i>
+                            <span class="title">Reporting</span>
+                            <span class="selected"></span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu" style="display: block;">
+                            <li class="nav-item">
+                                <a href="{{ route('setting.index') }}" class="nav-link">
+                                    <i class="fa fa-chart-bar"></i>
+                                    <span class="title">Setting</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow "></span>
+                                </a>
+                            </li>
+                            <li class="nav-item active">
+                                <a href="{{ route('webreport') }}" class="nav-link">
+                                    <i class="fa fa-chart-bar"></i>
+                                    <span class="title">Report</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow "></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('webmonthly') }}" class="nav-link">
+                                    <i class="fa fa-chart-bar"></i>
+                                    <span class="title">Report Monthly</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow "></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('weblog') }}" class="nav-link">
+                                    <i class="fa fa-chart-bar"></i>
+                                    <span class="title">Log</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow "></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('sendsapindex') }}" class="nav-link">
+                                    <i class="fa fa-chart-bar"></i>
+                                    <span class="title">Get Data</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow "></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('webresend') }}" class="nav-link">
+                                    <i class="fa fa-chart-bar"></i>
+                                    <span class="title">Manual Send</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow "></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="page-content-wrapper">
@@ -176,13 +176,18 @@
                                         <label class="col-md-1 control-label" style="text-align:left;">Group</label>
                                         <div class="col-md-2">
                                             <div class="input-group">
-                                                <select class="form-control" id="group" name="group" aria-controls="" class="">
+                                                <select class="form-control select2" id="group" name="group" aria-controls="" class="">
                                                     <option value="ALL">ALL</option>
                                                     @foreach ($group as $grp)
                                                     <option value="{{$grp->orgCode}}">{{$grp->orgCode .'-'.$grp->orgName}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <select class="form-control select2" name="employee" id="employee">
+                                                <option value="all">All Employees</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -197,32 +202,22 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <input class="form-control" name="grup" placeholder="Group" type="text" id="grup" autocomplete="off">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input class="form-control" name="employee" placeholder="Employee" type="text" id="employee" autocomplete="off">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-circle btn-block btn-outline btn-md blue doSearch"> <i class="fa fa-search"></i> Filter
-                                        </button>
-                                    </div>
+                                </form>
                             </div>
-                            </form>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12">
+                    <div class="col-md-12">
 
-                    <div class="portlet light bordered">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <span class="caption-subject font-blue sbold uppercase blue">Time Attendance</span>
-                            </div>
-                            <div class="actions">
-                                <div class="btn-group btn-group-devided">
-                                    <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download"></i> Excel</button>
-                                    <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="3" id="export_transaction_btn"><i class="fa fa-download"></i> PDF</button>
+                        <div class="portlet light bordered">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <span class="caption-subject font-blue sbold uppercase blue">Time Attendance</span>
+                                </div>
+                                <div class="actions">
+                                    <div class="btn-group btn-group-devided">
+                                        <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="2" id="export_transaction_btn"><i class="fa fa-download"></i> Excel</button>
+                                        <button type="button" class="btn btn-outline btn-circle btn-sm blue" data-type="3" id="export_transaction_btn"><i class="fa fa-download"></i> PDF</button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -273,451 +268,468 @@
             </div>
         </div>
     </div>
-    <<<<<<< HEAD
+    <div class="page-footer">
+        <div class="page-footer-inner">
+            <a> FaceApi IOI V 3.4.0.0 ((20250313))</a>
         </div>
-        <div class="page-footer">
-            <div class="page-footer-inner">
-                <a> FaceApi IOI V 3.3.0.4 (20231003)</a>
-                =======
-                <div class="page-footer">
-                    <div class="page-footer-inner">
-                        <a> FaceApi IOI V 3.4.0.0 ((20250313))</a>
-                    </div>
-                    <div class="scroll-to-top">
-                        <i class="icon-arrow-up"></i>
-                    </div>
-                    >>>>>>> origin/development
-                </div>
-                <div class="scroll-to-top">
-                    <i class="icon-arrow-up"></i>
-                </div>
-            </div>
-            <div class="quick-nav-overlay"></div>
+        <div class="scroll-to-top">
+            <i class="icon-arrow-up"></i>
+        </div>
+    </div>
+    <div class="quick-nav-overlay"></div>
 
-            <script src="{{asset('vendor/template_assets/global/plugins/jquery.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/global/plugins/bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/global/plugins/js.cookie.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/global/plugins/jquery.blockui.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/jquery.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/js.cookie.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/jquery.blockui.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js')}}" type="text/javascript"></script>
 
-            <script src="{{asset('vendor/template_assets/global/plugins/datatables/datatables.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/datatables/js/dataTables.rowGroup.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/datatables/datatables.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/datatables/js/dataTables.rowGroup.min.js')}}" type="text/javascript"></script>
 
-            <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}" type="text/javascript"></script>
 
-            <script src="{{asset('vendor/template_assets/global/plugins/jquery-repeater/jquery.repeater.js')}}" type='text/javascript'></script>
-            <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}" type='text/javascript'></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/jquery-repeater/jquery.repeater.js')}}" type='text/javascript'></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}" type='text/javascript'></script>
 
-            <script src="{{asset('vendor/template_assets/global/plugins/counterup/jquery.waypoints.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/global/plugins/counterup/jquery.counterup.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/counterup/jquery.waypoints.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/counterup/jquery.counterup.min.js')}}" type="text/javascript"></script>
 
-            <script src="{{asset('vendor/template_assets/global/scripts/app.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/scripts/app.min.js')}}" type="text/javascript"></script>
 
-            <script src="{{asset('vendor/template_assets/pages/scripts/components-date-time-pickers.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/pages/scripts/components-date-time-pickers.min.js')}}" type="text/javascript"></script>
 
-            <script src="{{asset('vendor/template_assets/global/plugins/select2/js/select2.full.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/pages/scripts/components-select2.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/select2/js/select2.full.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/pages/scripts/components-select2.js')}}" type="text/javascript"></script>
 
-            <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/pages/scripts/components-date-time-pickers.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/pages/scripts/components-date-time-pickers.js')}}" type="text/javascript"></script>
 
-            <script src="{{asset('vendor/template_assets/layouts/layout4/scripts/layout.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/layouts/layout4/scripts/demo.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/layouts/global/scripts/quick-sidebar.min.js')}}" type="text/javascript"></script>
-            <script src="{{asset('vendor/template_assets/layouts/global/scripts/quick-nav.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/layouts/layout4/scripts/layout.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/layouts/layout4/scripts/demo.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/layouts/global/scripts/quick-sidebar.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendor/template_assets/layouts/global/scripts/quick-nav.min.js')}}" type="text/javascript"></script>
 
-            <link type="text/css" href="{{asset('vendor/datatables/js/dataTables.checkboxes.css')}}" rel="stylesheet" />
-            <script type="text/javascript" src="{{asset('vendor/datatables/js/dataTables.checkboxes.min.js')}}"></script>
-            <script type="text/javascript">
-                var timer_fr = {
-                    interval: null,
-                    seconds: 50,
-                    start: function() {
-                        var self = this;
-                        this.interval = setInterval(function() {
-                            self.seconds--;
+    <link type="text/css" href="{{asset('vendor/datatables/js/dataTables.checkboxes.css')}}" rel="stylesheet" />
+    <script type="text/javascript" src="{{asset('vendor/datatables/js/dataTables.checkboxes.min.js')}}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
 
-                            if (self.seconds == 0) {
-                                //window.location.reload();
-                                self.seconds = 50;
-                                tableAttendance.draw();
-                            }
-                        }, 1000);
+            $('#group').on('change', function() {
+                let group = $(this).val();
+
+                $.ajax({
+                    url: "{{ route('webgetemployees') }}",
+                    type: "GET",
+                    data: {
+                        group: group
                     },
+                    success: function(response) {
+                        $('#employee').empty();
+                        $('#employee').append('<option value="ALL">All Employees</option>');
 
-                    stop: function() {
-                        window.clearInterval(this.interval)
+                        $.each(response, function(key, value) {
+                            $('#employee').append('<option value="' + value.personid + '">' + value.firstname + '</option>');
+                        });
                     }
-                }
-
-                function myFunction() {
-                    location.reload();
-                }
-                $(document).ready(function() {
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    timer_fr.start();
-                })
-
-                function printDiv(divID) {
-                    //Get the HTML of div
-                    var divElements = document.getElementById(divID).innerHTML;
-                    //Get the HTML of whole page
-                    var oldPage = document.body.innerHTML;
-                    //Reset the page's HTML with div's HTML only
-                    console.info('html', divElements);
-                    document.body.innerHTML =
-                        "<html><head><title></title></head><body>" +
-                        divElements + "</body>";
-                    //Print Page
-                    //    window.print();
-                    //Restore orignal HTML
-                    document.body.innerHTML = oldPage;
-                }
-                // var printEvent = window.matchMedia('print');
-                // printEvent.addListener(function(printEnd) {
-                //     if (!printEnd.matches) {
-                //         location.reload();
-                //     };
-                // });
-            </script>
-            <script language="javascript" type="text/javascript">
-                var tableAttendance;
-                var searching;
-                $(document).ready(function() {
-                    createTable();
-                    $(document).on('click', '.doSearch', function(e) {
-                        if (typeof tableAttendance !== 'undefined') {
-                            tableAttendance.clear().destroy();
-                        }
-                        var e_date = $('#enddate').val();
-                        console.info('edate', e_date);
-                        if (e_date == '') {
-                            return false;
-                        }
-                        createTable();
-                    });
-                    $(document).on('click', '#export_transaction_btn', function(i) {
-                        var tipe = i.target.dataset.type;
-                        if (tipe == 1) {
-                            tableAttendance.button('.buttons-csv').trigger();
-                        } else if (tipe == 2) {
-                            //                        tableAttendance.button('.buttons-excel').trigger();
-                            let startdate = $('#startdate').val(),
-                                enddate = $('#enddate').val(),
-                                group = $('#group').val(),
-                                search = $('input[name="searching"]').val();
-                            let url = "{{ url('report/print') }}";
-                            let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "&searchbox=" + search + "";
-                            window.open(urlstr);
-                        } else if (tipe == 3) {
-                            tableAttendance.button('.buttons-pdf').trigger();
-                        } else if (tipe == 4) {
-                            tableAttendance.button('.buttons-print').trigger();
-                        }
-                    });
-                    $("div.dataTables_filter input").unbind();
-                    //                $("div.dataTables_filter input").on('keydown', function (e) {
-                    //                    if (e.which == 13) {
-                    //                        tableAttendance.draw();
-                    //                    }
-                    //                });
                 });
+            });
+        });
+    </script>
 
-                function createTable() {
-                    tableAttendance = $('#att_table').DataTable({
-                        //                    processing: true,
-                        autoFilter: false,
-                        language: {
-                            loadingRecords: '&nbsp;',
-                            lengthMenu: "_MENU_ records",
-                            processing: 'Please wait...'
-                            //            processing: '<div class="spinner"></div>'
-                        },
-                        serverSide: false,
-                        autoWidth: true,
-                        //        scrollY:        "300px",
-                        scrollX: true,
-                        scrollCollapse: true,
-                        //        fixedColumns: true,
-                        //                    fixedColumns: {
-                        //                        leftColumns: 1
-                        //                    },
-                        ajax: {
-                            url: "{{ url('report/data_beautifullify') }}",
-                            data: function(d) {
-                                d.startdate = $('#startdate').val(),
-                                    d.enddate = $('#enddate').val(),
-                                    d.group = $('#group').val(),
-                                    d.searchbox = $('input[name="searching"').val();
-                            },
-                            method: 'get',
-                            dataType: 'json'
-                        },
-                        drawCallback: function(settings) {
-                            //                        console.info('drawCallback')
-                            //    console.log('table',tableAttendance);
-                            //    console.log('table',tableAttendance.fixedColumns().left());
-                            //   console.log(settings.json);
-                            //do whatever  
-                            //                        console.info('$("div.dataTables_filter input").val()',searching);
-                        },
-                        //
-                        dom: 'lrtip',
-                        //                    dom: 'Blfrtip',
-                        //        dom: '<"float-left"B><"float-right"f>rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
-                        buttons: [{
-                                text: 'csv',
-                                extend: 'csvHtml5',
-                                exportOptions: {
-                                    columns: ':visible:not(.not-export-col)'
-                                }
-                            },
-                            {
-                                text: 'excel',
-                                extend: 'excelHtml5',
-                                exportOptions: {
-                                    columns: ':visible:not(.not-export-col)'
-                                }
-                            },
-                            {
-                                text: 'pdf',
-                                extend: 'pdfHtml5',
-                                orientation: 'landscape',
-                                pageSize: 'LEGAL',
-                                customize: function(doc) {
-                                    console.info('docstyle', doc.content);
-                                    doc.styles.tableHeader.fontSize = 8;
-                                    doc.defaultStyle.fontSize = 7;
-                                    doc.content[1].table.widths = ['2%', '4%', '5%', '7%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '4%', '4%'];
-                                },
-                                exportOptions: {
-                                    columns: ':visible:not(.not-export-col)'
-                                }
-                            },
-                            {
-                                text: 'print',
-                                extend: 'print',
-                                exportOptions: {
-                                    columns: ':visible:not(.not-export-col)'
-                                }
-                            },
-                        ],
-                        columns: [{
-                                data: 'no_urut',
-                                name: 'no_urut'
-                            },
-                            {
-                                data: 'orgname',
-                                name: 'orgname'
-                            },
-                            {
-                                data: 'worker_id',
-                                name: 'worker_id'
-                            },
-                            {
-                                data: 'nama_personnel',
-                                name: 'nama_personnel'
-                            },
-                            //                                  {data: null, name: 'work_date', render: function (data, type, row) {
-                            //                                return '<div class="form-control1" id="" type="text" style="" >' + data.work_date + '</div>';
-                            //                                        }},                        
-                            {
-                                data: 'work_date',
-                                name: 'work_date',
-                                width: 60
-                            },
-                            {
-                                data: 'time_in_0',
-                                name: 'time_in_0',
-                                width: 60
-                            },
-                            {
-                                data: 'time_ot_0',
-                                name: 'time_ot_0',
-                                width: 60
-                            },
-                            {
-                                data: 'time_in_1',
-                                name: 'time_in_1',
-                                width: 60
-                            },
-                            {
-                                data: 'time_ot_1',
-                                name: 'time_ot_1',
-                                width: 60
-                            },
-                            {
-                                data: 'time_in_2',
-                                name: 'time_in_2',
-                                width: 60
-                            },
-                            {
-                                data: 'time_ot_2',
-                                name: 'time_ot_2',
-                                width: 60
-                            },
-                            {
-                                data: 'time_in_3',
-                                name: 'time_in_3',
-                                width: 60
-                            },
-                            {
-                                data: 'time_ot_3',
-                                name: 'time_ot_3',
-                                width: 60
-                            },
-                            {
-                                data: 'time_in_4',
-                                name: 'time_in_4',
-                                width: 60
-                            },
-                            {
-                                data: 'time_ot_4',
-                                name: 'time_ot_4',
-                                width: 60
-                            },
-                            {
-                                data: 'time_in_5',
-                                name: 'time_in_5',
-                                width: 60
-                            },
-                            {
-                                data: 'time_ot_5',
-                                name: 'time_ot_5',
-                                width: 60
-                            },
-                            {
-                                data: 'first_in',
-                                name: 'first_in',
-                                width: 60
-                            },
-                            {
-                                data: 'last_out',
-                                name: 'last_out',
-                                width: 60
-                            },
-                            {
-                                data: 'duration',
-                                name: 'duration'
-                            },
-                            {
-                                data: 'total_rest',
-                                name: 'total_rest'
-                            },
-                            {
-                                data: 'ot',
-                                name: 'ot'
-                            }
-                        ],
-                        lengthMenu: [
-                            [10, 25, 50, 100, -1],
-                            [10, 25, 50, 100, 'All'],
-                        ],
-                        order: [
-                            [0, 'asc']
-                        ]
-                    });
-                }
-            </script>
-            <script src="{{asset('assets/js/report/table.js')}}" type='text/javascript'></script>
-            <style type="text/css">
-                .dt-buttons {
-                    display: none;
-                }
+    <script type="text/javascript">
+        var timer_fr = {
+            interval: null,
+            seconds: 50,
+            start: function() {
+                var self = this;
+                this.interval = setInterval(function() {
+                    self.seconds--;
 
-                .pull-left ul {
-                    list-style: none;
-                    margin: 0;
-                    padding-left: 0;
-                }
-
-                .pull-left a {
-                    text-decoration: none;
-                    color: #ffffff;
-                }
-
-                .pull-left li {
-                    color: #ffffff;
-                    background-color: #2f2f2f;
-                    border-color: #2f2f2f;
-                    display: block;
-                    float: left;
-                    position: relative;
-                    text-decoration: none;
-                    transition-duration: 0.5s;
-                    padding: 12px 30px;
-                    font-size: .75rem;
-                    font-weight: 400;
-                    line-height: 1.428571;
-                }
-
-                .pull-left li:hover {
-                    cursor: pointer;
-                }
-
-                .pull-left ul li ul {
-                    visibility: hidden;
-                    opacity: 0;
-                    min-width: 9.2rem;
-                    position: absolute;
-                    transition: all 0.5s ease;
-                    margin-top: 8px;
-                    left: 0;
-                    display: none;
-                }
-
-                .pull-left ul li:hover>ul,
-                .pull-left ul li ul:hover {
-                    visibility: visible;
-                    opacity: 1;
-                    display: block;
-                }
-
-                .pull-left ul li ul li {
-                    clear: both;
-                    width: 100%;
-                    color: #ffffff;
-                }
-
-                .ul-dropdown {
-                    margin: 0.3125rem 1px !important;
-                    outline: 0;
-                }
-
-                .firstli {
-                    border-radius: 0.2rem;
-                }
-
-                .firstli .material-icons {
-                    position: relative;
-                    display: inline-block;
-                    top: 0;
-                    margin-top: -1.1em;
-                    margin-bottom: -1em;
-                    font-size: 0.8rem;
-                    vertical-align: middle;
-                    margin-right: 5px;
-                }
-
-                @media print and (width: 9.5in) and (height: 14in) {
-                    @page {
-                        margin: 1in;
+                    if (self.seconds == 0) {
+                        //window.location.reload();
+                        self.seconds = 50;
+                        tableAttendance.draw();
                     }
+                }, 1000);
+            },
 
-                    body {
-                        margin: 0;
-                        color: #f00;
-                        background-color: #0ff;
-                    }
+            stop: function() {
+                window.clearInterval(this.interval)
+            }
+        }
+
+        function myFunction() {
+            location.reload();
+        }
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            </style>
+            });
+            timer_fr.start();
+        })
+
+        function printDiv(divID) {
+            //Get the HTML of div
+            var divElements = document.getElementById(divID).innerHTML;
+            //Get the HTML of whole page
+            var oldPage = document.body.innerHTML;
+            //Reset the page's HTML with div's HTML only
+            console.info('html', divElements);
+            document.body.innerHTML =
+                "<html><head><title></title></head><body>" +
+                divElements + "</body>";
+            //Print Page
+            //    window.print();
+            //Restore orignal HTML
+            document.body.innerHTML = oldPage;
+        }
+        // var printEvent = window.matchMedia('print');
+        // printEvent.addListener(function(printEnd) {
+        //     if (!printEnd.matches) {
+        //         location.reload();
+        //     };
+        // });
+    </script>
+    <script language="javascript" type="text/javascript">
+        var tableAttendance;
+        var searching;
+        $(document).ready(function() {
+            createTable();
+            $(document).on('click', '.doSearch', function(e) {
+                if (typeof tableAttendance !== 'undefined') {
+                    tableAttendance.clear().destroy();
+                }
+                var e_date = $('#enddate').val();
+                console.info('edate', e_date);
+                if (e_date == '') {
+                    return false;
+                }
+                createTable();
+            });
+            $(document).on('click', '#export_transaction_btn', function(i) {
+                var tipe = i.target.dataset.type;
+                if (tipe == 1) {
+                    tableAttendance.button('.buttons-csv').trigger();
+                } else if (tipe == 2) {
+                    //                        tableAttendance.button('.buttons-excel').trigger();
+                    let startdate = $('#startdate').val(),
+                        enddate = $('#enddate').val(),
+                        group = $('#group').val(),
+                        employee = $('#employee').val(),
+                        search = $('input[name="searching"]').val();
+                    let url = "{{ url('report/print') }}";
+                    let urlstr = url + "?group=" + group + "&startdate=" + startdate + "&enddate=" + enddate + "&searchbox=" + search + "";
+                    window.open(urlstr);
+                } else if (tipe == 3) {
+                    tableAttendance.button('.buttons-pdf').trigger();
+                } else if (tipe == 4) {
+                    tableAttendance.button('.buttons-print').trigger();
+                }
+            });
+            $("div.dataTables_filter input").unbind();
+            //                $("div.dataTables_filter input").on('keydown', function (e) {
+            //                    if (e.which == 13) {
+            //                        tableAttendance.draw();
+            //                    }
+            //                });
+        });
+
+        function createTable() {
+            tableAttendance = $('#att_table').DataTable({
+                //                    processing: true,
+                autoFilter: false,
+                language: {
+                    loadingRecords: '&nbsp;',
+                    lengthMenu: "_MENU_ records",
+                    processing: 'Please wait...'
+                    //            processing: '<div class="spinner"></div>'
+                },
+                serverSide: false,
+                autoWidth: true,
+                //        scrollY:        "300px",
+                scrollX: true,
+                scrollCollapse: true,
+                //        fixedColumns: true,
+                //                    fixedColumns: {
+                //                        leftColumns: 1
+                //                    },
+                ajax: {
+                    url: "{{ url('report/data_beautifullify') }}",
+                    data: function(d) {
+                        d.startdate = $('#startdate').val(),
+                            d.enddate = $('#enddate').val(),
+                            d.group = $('#group').val(),
+                            d.employee = $('#employee').val(),
+                            d.searchbox = $('input[name="searching"').val();
+                    },
+                    method: 'get',
+                    dataType: 'json'
+                },
+                drawCallback: function(settings) {
+                    //                        console.info('drawCallback')
+                    //    console.log('table',tableAttendance);
+                    //    console.log('table',tableAttendance.fixedColumns().left());
+                    //   console.log(settings.json);
+                    //do whatever  
+                    //                        console.info('$("div.dataTables_filter input").val()',searching);
+                },
+                //
+                dom: 'lrtip',
+                //                    dom: 'Blfrtip',
+                //        dom: '<"float-left"B><"float-right"f>rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
+                buttons: [{
+                        text: 'csv',
+                        extend: 'csvHtml5',
+                        exportOptions: {
+                            columns: ':visible:not(.not-export-col)'
+                        }
+                    },
+                    {
+                        text: 'excel',
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible:not(.not-export-col)'
+                        }
+                    },
+                    {
+                        text: 'pdf',
+                        extend: 'pdfHtml5',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        customize: function(doc) {
+                            console.info('docstyle', doc.content);
+                            doc.styles.tableHeader.fontSize = 8;
+                            doc.defaultStyle.fontSize = 7;
+                            doc.content[1].table.widths = ['2%', '4%', '5%', '7%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '5%', '4%', '4%'];
+                        },
+                        exportOptions: {
+                            columns: ':visible:not(.not-export-col)'
+                        }
+                    },
+                    {
+                        text: 'print',
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible:not(.not-export-col)'
+                        }
+                    },
+                ],
+                columns: [{
+                        data: 'no_urut',
+                        name: 'no_urut'
+                    },
+                    {
+                        data: 'orgname',
+                        name: 'orgname'
+                    },
+                    {
+                        data: 'worker_id',
+                        name: 'worker_id'
+                    },
+                    {
+                        data: 'nama_personnel',
+                        name: 'nama_personnel'
+                    },
+                    //                                  {data: null, name: 'work_date', render: function (data, type, row) {
+                    //                                return '<div class="form-control1" id="" type="text" style="" >' + data.work_date + '</div>';
+                    //                                        }},                        
+                    {
+                        data: 'work_date',
+                        name: 'work_date',
+                        width: 60
+                    },
+                    {
+                        data: 'time_in_0',
+                        name: 'time_in_0',
+                        width: 60
+                    },
+                    {
+                        data: 'time_ot_0',
+                        name: 'time_ot_0',
+                        width: 60
+                    },
+                    {
+                        data: 'time_in_1',
+                        name: 'time_in_1',
+                        width: 60
+                    },
+                    {
+                        data: 'time_ot_1',
+                        name: 'time_ot_1',
+                        width: 60
+                    },
+                    {
+                        data: 'time_in_2',
+                        name: 'time_in_2',
+                        width: 60
+                    },
+                    {
+                        data: 'time_ot_2',
+                        name: 'time_ot_2',
+                        width: 60
+                    },
+                    {
+                        data: 'time_in_3',
+                        name: 'time_in_3',
+                        width: 60
+                    },
+                    {
+                        data: 'time_ot_3',
+                        name: 'time_ot_3',
+                        width: 60
+                    },
+                    {
+                        data: 'time_in_4',
+                        name: 'time_in_4',
+                        width: 60
+                    },
+                    {
+                        data: 'time_ot_4',
+                        name: 'time_ot_4',
+                        width: 60
+                    },
+                    {
+                        data: 'time_in_5',
+                        name: 'time_in_5',
+                        width: 60
+                    },
+                    {
+                        data: 'time_ot_5',
+                        name: 'time_ot_5',
+                        width: 60
+                    },
+                    {
+                        data: 'first_in',
+                        name: 'first_in',
+                        width: 60
+                    },
+                    {
+                        data: 'last_out',
+                        name: 'last_out',
+                        width: 60
+                    },
+                    {
+                        data: 'duration',
+                        name: 'duration'
+                    },
+                    {
+                        data: 'total_rest',
+                        name: 'total_rest'
+                    },
+                    {
+                        data: 'ot',
+                        name: 'ot'
+                    }
+                ],
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, 'All'],
+                ],
+                order: [
+                    [0, 'asc']
+                ]
+            });
+        }
+    </script>
+    <script src="{{asset('assets/js/report/table.js')}}" type='text/javascript'></script>
+    <style type="text/css">
+        .dt-buttons {
+            display: none;
+        }
+
+        .pull-left ul {
+            list-style: none;
+            margin: 0;
+            padding-left: 0;
+        }
+
+        .pull-left a {
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .pull-left li {
+            color: #ffffff;
+            background-color: #2f2f2f;
+            border-color: #2f2f2f;
+            display: block;
+            float: left;
+            position: relative;
+            text-decoration: none;
+            transition-duration: 0.5s;
+            padding: 12px 30px;
+            font-size: .75rem;
+            font-weight: 400;
+            line-height: 1.428571;
+        }
+
+        .pull-left li:hover {
+            cursor: pointer;
+        }
+
+        .pull-left ul li ul {
+            visibility: hidden;
+            opacity: 0;
+            min-width: 9.2rem;
+            position: absolute;
+            transition: all 0.5s ease;
+            margin-top: 8px;
+            left: 0;
+            display: none;
+        }
+
+        .pull-left ul li:hover>ul,
+        .pull-left ul li ul:hover {
+            visibility: visible;
+            opacity: 1;
+            display: block;
+        }
+
+        .pull-left ul li ul li {
+            clear: both;
+            width: 100%;
+            color: #ffffff;
+        }
+
+        .ul-dropdown {
+            margin: 0.3125rem 1px !important;
+            outline: 0;
+        }
+
+        .firstli {
+            border-radius: 0.2rem;
+        }
+
+        .firstli .material-icons {
+            position: relative;
+            display: inline-block;
+            top: 0;
+            margin-top: -1.1em;
+            margin-bottom: -1em;
+            font-size: 0.8rem;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        @media print and (width: 9.5in) and (height: 14in) {
+            @page {
+                margin: 1in;
+            }
+
+            body {
+                margin: 0;
+                color: #f00;
+                background-color: #0ff;
+            }
+        }
+    </style>
 </body>
 
 </html>
