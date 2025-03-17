@@ -15,38 +15,39 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::namespace("Web")
-        ->name("web")
-        ->prefix('report')
-        ->group(function () {
-            Route::get('/', [\App\Http\Controllers\Web\FaceController::class, 'report_formatted'])->name('report');
-            Route::get('/monthly', [\App\Http\Controllers\Web\FaceController::class, 'report_montly'])->name('monthly');
-            Route::get('/raw', [\App\Http\Controllers\Web\FaceController::class, 'report'])->name('report_raw');
-            Route::get('/data', [\App\Http\Controllers\Web\FaceController::class, 'getData'])->name('data');
-            Route::get('/data_beautifullify', [\App\Http\Controllers\Web\FaceController::class, 'getDataFormatted'])->name('data_pretty');
-            Route::get('/data_monthly', [\App\Http\Controllers\Web\FaceController::class, 'getDataMonthly'])->name('data_monthly');
-            Route::get('/print', [\App\Http\Controllers\Web\FaceController::class, 'export'])->name('report_excel');
-            Route::get('/export_monthly', [\App\Http\Controllers\Web\FaceController::class, 'export_monthly'])->name('report_excel_monthly');
-        });
+    ->name("web")
+    ->prefix('report')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Web\FaceController::class, 'report_formatted'])->name('report');
+        Route::get('/monthly', [\App\Http\Controllers\Web\FaceController::class, 'report_montly'])->name('monthly');
+        Route::get('/raw', [\App\Http\Controllers\Web\FaceController::class, 'report'])->name('report_raw');
+        Route::get('/data', [\App\Http\Controllers\Web\FaceController::class, 'getData'])->name('data');
+        Route::get('/data_beautifullify', [\App\Http\Controllers\Web\FaceController::class, 'getDataFormatted'])->name('data_pretty');
+        Route::get('/data_monthly', [\App\Http\Controllers\Web\FaceController::class, 'getDataMonthly'])->name('data_monthly');
+        Route::get('/print', [\App\Http\Controllers\Web\FaceController::class, 'export'])->name('report_excel');
+        Route::get('/export_monthly', [\App\Http\Controllers\Web\FaceController::class, 'export_monthly'])->name('report_excel_monthly');
+        Route::get('/get-employees', [\App\Http\Controllers\Web\FaceController::class, 'getEmployees'])->name('getemployees');
+    });
 Route::namespace("Web")
-        ->name("web")
-        ->prefix('log')
-        ->group(function () {
-            Route::get('/', [\App\Http\Controllers\Web\LogController::class, 'report_formatted'])->name('log');
-            Route::get('/rawlog', [\App\Http\Controllers\Web\LogController::class, 'report'])->name('report_raw_log');
-            Route::get('/datalog', [\App\Http\Controllers\Web\LogController::class, 'getData'])->name('datalog');
-            Route::get('/data_beautifullify_log', [\App\Http\Controllers\Web\LogController::class, 'getDataFormatted'])->name('data_pretty_log');
-        });
+    ->name("web")
+    ->prefix('log')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Web\LogController::class, 'report_formatted'])->name('log');
+        Route::get('/rawlog', [\App\Http\Controllers\Web\LogController::class, 'report'])->name('report_raw_log');
+        Route::get('/datalog', [\App\Http\Controllers\Web\LogController::class, 'getData'])->name('datalog');
+        Route::get('/data_beautifullify_log', [\App\Http\Controllers\Web\LogController::class, 'getDataFormatted'])->name('data_pretty_log');
+    });
 Route::namespace("Web")
-        ->name("web")
-        ->prefix('resend')
-        ->group(function () {
-            Route::get('/data_daily', [\App\Http\Controllers\Web\ManualSendController::class, 'getDataDaily'])->name('data_daily');
-            Route::post('/transfersap', [\App\Http\Controllers\Web\ManualSendController::class, 'transfersap'])->name('transfersap');
-            Route::get('/data_monthly', [\App\Http\Controllers\Web\ManualSendController::class, 'getDataMonthly'])->name('data_send');
-            Route::get('/data', [\App\Http\Controllers\Web\ManualSendController::class, 'getData'])->name('resenddata');
-            Route::get('/', [\App\Http\Controllers\Web\ManualSendController::class, 'index'])->name('resend');
-            Route::get('/export_monthly', [\App\Http\Controllers\Web\ManualSendController::class, 'export_monthly'])->name('send_excel_monthly');
-        });
+    ->name("web")
+    ->prefix('resend')
+    ->group(function () {
+        Route::get('/data_daily', [\App\Http\Controllers\Web\ManualSendController::class, 'getDataDaily'])->name('data_daily');
+        Route::post('/transfersap', [\App\Http\Controllers\Web\ManualSendController::class, 'transfersap'])->name('transfersap');
+        Route::get('/data_monthly', [\App\Http\Controllers\Web\ManualSendController::class, 'getDataMonthly'])->name('data_send');
+        Route::get('/data', [\App\Http\Controllers\Web\ManualSendController::class, 'getData'])->name('resenddata');
+        Route::get('/', [\App\Http\Controllers\Web\ManualSendController::class, 'index'])->name('resend');
+        Route::get('/export_monthly', [\App\Http\Controllers\Web\ManualSendController::class, 'export_monthly'])->name('send_excel_monthly');
+    });
 //Route::namespace("Web")
 //        ->name("web")
 //        ->prefix('report')
@@ -64,7 +65,6 @@ Route::get('/person', [\App\Http\Controllers\Web\PersonController::class, 'index
 Route::get('/person.data', [\App\Http\Controllers\Web\PersonController::class, 'list_formatted'])->name('person.data');
 Route::post('/person.pull', [\App\Http\Controllers\Web\PersonController::class, 're_pull'])->name('person.pull');
 Route::resource('setting', \App\Http\Controllers\Web\SettingController::class);
-Route::get('sendsap', [\App\Http\Controllers\Web\SendSapController::class,'index'])->name('sendsapindex');
+Route::get('sendsap', [\App\Http\Controllers\Web\SendSapController::class, 'index'])->name('sendsapindex');
 Route::post('sendsap.transfer', [\App\Http\Controllers\Web\SendSapController::class, 'transfer_sap'])->name('sendsap.transfer');
 Route::post('setting.check', [\App\Http\Controllers\Web\SettingController::class, 'check_connection'])->name('setting.check');
-
